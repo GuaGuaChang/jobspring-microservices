@@ -3,3 +3,12 @@ server:
 spring:
   application:
     name: auth-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
