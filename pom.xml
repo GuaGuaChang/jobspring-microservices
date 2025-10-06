@@ -15,11 +15,17 @@
         <module>common</module>
         <module>auth-service</module>
         <module>job-service</module>
+        <module>gateway-service</module>
+        <module>user-service</module>
+        <module>company-service</module>
+        <module>application-service</module>
+        <module>notification-service</module>
     </modules>
 
     <properties>
         <java.version>21</java.version>
         <spring.boot.version>3.2.9</spring.boot.version>
+        <maven.compiler.release>21</maven.compiler.release>
     </properties>
 
 
@@ -52,6 +58,14 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
+                    <configuration>
+                        <release>${maven.compiler.release}</release>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>

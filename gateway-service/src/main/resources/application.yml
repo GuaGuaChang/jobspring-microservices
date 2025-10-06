@@ -1,0 +1,52 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: auth
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**, /ping
+          filters:
+            - StripPrefix=1
+        - id: job
+          uri: lb://job-service
+          predicates:
+            - Path=/api/job/**
+          filters:
+            - StripPrefix=1
+        - id: user
+          uri: lb://user-service
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - StripPrefix=1
+        - id: company
+          uri: lb://company-service
+          predicates:
+            - Path=/api/company/**
+          filters:
+            - StripPrefix=1
+        - id: application
+          uri: lb://application-service
+          predicates:
+            - Path=/api/application/**
+          filters:
+            - StripPrefix=1
+        - id: notification
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/notification/**
+          filters:
+            - StripPrefix=1

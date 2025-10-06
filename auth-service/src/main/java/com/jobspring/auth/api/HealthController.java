@@ -9,12 +9,12 @@ public class HealthController {
     @Value("${test.message:default}")
     private String message;
 
-    @GetMapping("/ping")
+    @GetMapping("/auth/ping")
     public String ping() {
         return "auth-service-ok";
     }
 
-    @GetMapping("/config")
+    @GetMapping("/auth/config")
     public String config() {
         return message;
     }
