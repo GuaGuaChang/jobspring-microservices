@@ -28,7 +28,7 @@ public class JwtAuthFilter implements WebFilter {
         ServerHttpRequest req = exchange.getRequest();
         String path = req.getURI().getPath();
 
-        if (path.startsWith("/api") || "/api/ping".equals(path)) {
+        if (path.startsWith("/api/auth/login") || "/api/ping".equals(path) || path.startsWith("/actuator") || path.startsWith("/api/auth/register")) {
             return chain.filter(exchange);
         }
 
