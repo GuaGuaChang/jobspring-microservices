@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/notification")
 public class HealthController {
     @GetMapping("/ping")
     public Map<String, String> ping() {

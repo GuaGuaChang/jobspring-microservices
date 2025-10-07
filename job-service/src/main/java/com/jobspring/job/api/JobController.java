@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class JobController {
     private final AuthClient authClient;
 
-    @GetMapping("/job/test")
+    @GetMapping("/test")
     public String test() {
         return "job-service-ok";
     }
 
-    @GetMapping("/job/ping-auth")
+    @GetMapping("/ping-auth")
     public String callAuth() {
         String result = authClient.pingFromAuth();
         return "job-service → " + result;

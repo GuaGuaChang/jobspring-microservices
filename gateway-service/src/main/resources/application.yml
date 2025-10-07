@@ -7,7 +7,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
     gateway:
       discovery:
         locator:
@@ -19,34 +19,44 @@ spring:
           predicates:
             - Path=/api/auth/**, /ping
           filters:
-            - StripPrefix=1
+            - StripPrefix=2
         - id: job
           uri: lb://job-service
           predicates:
             - Path=/api/job/**
           filters:
-            - StripPrefix=1
+            - StripPrefix=2
         - id: user
           uri: lb://user-service
           predicates:
             - Path=/api/user/**
           filters:
-            - StripPrefix=1
+            - StripPrefix=2
         - id: company
           uri: lb://company-service
           predicates:
             - Path=/api/company/**
           filters:
-            - StripPrefix=1
+            - StripPrefix=2
         - id: application
           uri: lb://application-service
           predicates:
             - Path=/api/application/**
           filters:
-            - StripPrefix=1
+            - StripPrefix=2
         - id: notification
           uri: lb://notification-service
           predicates:
             - Path=/api/notification/**
           filters:
-            - StripPrefix=1
+            - StripPrefix=2
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_ENDPOINT:http://127.0.0.1:9411/api/v2/spans}
+
+management.endpoints.web.exposure.include: ""
