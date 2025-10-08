@@ -5,12 +5,11 @@ import com.jobspring.auth.account.AccountRepo;
 import com.jobspring.auth.dto.AuthResponse;
 import com.jobspring.auth.dto.LoginRequest;
 import com.jobspring.auth.dto.RegisterRequest;
+import com.jobspring.auth.dto.UserDTO;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,8 +56,7 @@ public class AuthController {
     public AuthResponse login(@Valid @RequestBody LoginRequest req) {
         var a = accounts.findByEmail(req.getEmail())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password"));
-        if (!Boolean.TRUE.equals(a.getActive()) ||
-                !encoder.matches(req.getPassword(), a.getPasswordHash())) {
+        if (!Boolean.TRUE.equals(a.getActive()) || !encoder.matches(req.getPassword(), a.getPasswordHash())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
         }
 
@@ -73,7 +71,11 @@ public class AuthController {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
-        return new AuthResponse(a.getId(), a.getEmail(), a.getFullName(), a.getRole(), token, exp.toEpochMilli());
+        return new AuthResponse(
+                new UserDTO(a.getId(), a.getEmail(), a.getFullName(), a.getRole()),
+                token,
+                exp.toEpochMilli()
+        );
     }
 
     @GetMapping("/me")
@@ -84,32 +86,6 @@ public class AuthController {
         return new MeResp(a.getId(), a.getEmail(), a.getFullName(), a.getRole());
     }
 
-    @Data
-    public static class RegisterReq {
-        @Email
-        @NotBlank
-        private String email;
-        @NotBlank
-        private String password;
-        private String phone;
-        @NotBlank
-        private String fullName;
-    }
-
-    @Data
-    public static class LoginReq {
-        @Email
-        @NotBlank
-        private String email;
-        @NotBlank
-        private String password;
-    }
-
-    @Data
-    public static class TokenResp {
-        private final String token;
-        private final long expiresAt;
-    }
 
     @Data
     public static class IdResp {

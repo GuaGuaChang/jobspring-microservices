@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -27,8 +28,13 @@ public class JwtAuthFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         ServerHttpRequest req = exchange.getRequest();
         String path = req.getURI().getPath();
+        HttpMethod method = req.getMethod();
 
-        if (path.startsWith("/api/auth/login") || "/api/ping".equals(path) || path.startsWith("/actuator") || path.startsWith("/api/auth/register")) {
+        if (HttpMethod.OPTIONS.equals(method) ||
+                path.equals("/api/auth/login") ||
+                path.equals("/api/auth/register") ||
+                path.equals("/api/ping") ||
+                path.startsWith("/actuator")) {
             return chain.filter(exchange);
         }
 
