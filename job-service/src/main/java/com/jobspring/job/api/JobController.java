@@ -3,14 +3,22 @@ package com.jobspring.job.api;
 import com.jobspring.job.dto.JobDTO;
 import com.jobspring.job.client.AuthClient;
 import com.jobspring.job.dto.JobSummaryResponse;
+import com.jobspring.job.entity.Job;
 import com.jobspring.job.service.JobService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -66,6 +74,19 @@ public class JobController {
     @GetMapping("/{jobId}/summary")
     public ResponseEntity<JobSummaryResponse> summary(@PathVariable Long jobId) {
         return ResponseEntity.ok(jobService.getSummary(jobId));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/status")
+    public List<Map<String,Object>> getAllJobStatus() { return jobService.listStatus(); }
+
+    // 下线岗位（快捷端点，可选）
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/companies/{companyId}/jobs/{jobId}/invalid")
+    public ResponseEntity<Void> deactivate(@PathVariable Long companyId,
+                                           @PathVariable Long jobId) {
+        jobService.deactivateJob(companyId, jobId);
+        return ResponseEntity.noContent().build();
     }
 
 }

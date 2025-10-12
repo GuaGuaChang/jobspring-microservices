@@ -44,4 +44,6 @@ public class JobFavoriteController {
         Long userId = Long.valueOf(auth.getName());
         return ResponseEntity.ok(favoriteService.list(userId, pageable));
     }
+
+
 }

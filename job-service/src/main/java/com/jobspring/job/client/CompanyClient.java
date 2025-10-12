@@ -2,15 +2,15 @@ package com.jobspring.job.client;
 
 
 
+import com.jobspring.job.dto.CompanyDTO;
 import com.jobspring.job.dto.CompanyFavouriteResponse;
 import com.jobspring.job.dto.CompanyResponse;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @FeignClient(name = "company-service")
 public interface CompanyClient {
@@ -23,4 +23,7 @@ public interface CompanyClient {
 
     @GetMapping("/search")
     List<Long> findCompanyIdsByName(@RequestParam("keyword") String keyword);
+
+    @PostMapping("/batch")
+    Map<Long, CompanyDTO> findByIds(@RequestBody List<Long> ids);
 }

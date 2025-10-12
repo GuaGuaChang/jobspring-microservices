@@ -70,6 +70,12 @@
             <artifactId>flyway-mysql</artifactId>
         </dependency>
 
+        <!-- 必需：Spring Security 基础 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

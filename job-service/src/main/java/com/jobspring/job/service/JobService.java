@@ -1,19 +1,23 @@
 package com.jobspring.job.service;
 
 import com.jobspring.job.client.CompanyClient;
-import com.jobspring.job.dto.CompanyResponse;
-import com.jobspring.job.dto.JobDTO;
-import com.jobspring.job.dto.JobSummaryResponse;
+import com.jobspring.job.dto.*;
 import com.jobspring.job.entity.Job;
 import com.jobspring.job.repository.JobRepository;
 import com.jobspring.job.repository.SkillRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 
 @Service
@@ -22,9 +26,11 @@ public class JobService {
 
     private final JobRepository jobRepository;
 
-    private  final SkillRepository skillRepository;
+    private final SkillRepository skillRepository;
 
     private final CompanyClient companyClient;
+
+    private final ApplicationEventPublisher publisher;
 
 
     // 为求职者获取职位列表
@@ -116,4 +122,40 @@ public class JobService {
         }
         return r;
     }
+
+
+    public List<Map<String, Object>> listStatus() {
+        List<Job> all = jobRepository.findAll();
+        List<Long> companyIds = all.stream().map(Job::getCompanyId).distinct().toList();
+
+        Map<Long, CompanyDTO> companyMap = companyClient.findByIds(companyIds);
+
+        return all.stream().map(j -> {
+            Map<String, Object> m = new LinkedHashMap<>();
+            m.put("id", j.getId());
+            m.put("title", j.getTitle());
+            m.put("companyId", j.getCompanyId());
+            m.put("company",
+                    Optional.ofNullable(companyMap.get(j.getCompanyId()))
+                            .map(CompanyDTO::getName)
+                            .orElse("N/A"));
+            m.put("status", j.getStatus());
+            return m;
+        }).toList();
+    }
+
+    @Transactional
+    public void deactivateJob(Long companyId, Long jobId) {
+        Job job = jobRepository.findByIdAndCompanyId(jobId, companyId)
+                .orElseThrow(() -> new EntityNotFoundException("Job not found"));
+
+        // 1. 下线岗位
+        job.setStatus(1);
+        jobRepository.save(job);
+
+        // 2. 同步更新所有相关申请状态为 4（无效）
+        publisher.publishEvent(new JobDeactivatedEvent(companyId, jobId));
+        //applicationRepository.updateStatusByJobId(jobId, 4);
+    }
+
 }

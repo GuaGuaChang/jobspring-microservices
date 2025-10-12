@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificationExecutor<Job> {
@@ -27,4 +28,6 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
     Page<Job> searchJobs(@Param("keyword") String keyword,
                          @Param("companyIds") List<Long> companyIds,
                          Pageable pageable);
+
+    Optional<Job> findByIdAndCompanyId(Long jobId, Long companyId);
 }
