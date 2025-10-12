@@ -36,7 +36,6 @@ public class CompanyController {
     }
 
 
-
     // 提供给 job-service 调用的接口
     @GetMapping("/search")
     public List<Long> findCompanyIdsByName(@RequestParam String keyword) {

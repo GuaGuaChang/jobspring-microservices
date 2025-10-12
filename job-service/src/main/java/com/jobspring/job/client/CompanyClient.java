@@ -1,7 +1,6 @@
 package com.jobspring.job.client;
 
 
-
 import com.jobspring.job.dto.CompanyDTO;
 import com.jobspring.job.dto.CompanyFavouriteResponse;
 import com.jobspring.job.dto.CompanyResponse;

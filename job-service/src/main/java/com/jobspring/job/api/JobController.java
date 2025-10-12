@@ -78,7 +78,9 @@ public class JobController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/status")
-    public List<Map<String,Object>> getAllJobStatus() { return jobService.listStatus(); }
+    public List<Map<String, Object>> getAllJobStatus() {
+        return jobService.listStatus();
+    }
 
     // 下线岗位（快捷端点，可选）
     @PreAuthorize("hasRole('ADMIN')")

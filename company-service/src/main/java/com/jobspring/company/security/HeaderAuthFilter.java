@@ -18,9 +18,9 @@ public class HeaderAuthFilter extends OncePerRequestFilter {
         // 你的 token 里 role 是 0/1/2，可按项目枚举来映射
         return switch (String.valueOf(roleClaim)) {
             case "0", "CANDIDATE" -> "CANDIDATE";
-            case "1", "HR"        -> "HR";
-            case "2", "ADMIN"     -> "ADMIN";
-            default               -> "CANDIDATE";
+            case "1", "HR" -> "HR";
+            case "2", "ADMIN" -> "ADMIN";
+            default -> "CANDIDATE";
         };
     }
 
@@ -28,7 +28,7 @@ public class HeaderAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp, FilterChain chain)
             throws ServletException, IOException {
 
-        String uid  = req.getHeader("X-User-Id");
+        String uid = req.getHeader("X-User-Id");
         String role = req.getHeader("X-User-Role");
 
         if (uid != null && role != null && SecurityContextHolder.getContext().getAuthentication() == null) {

@@ -17,14 +17,14 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
     Page<Job> findByStatus(@Param("status") Integer status, Pageable pageable);
 
     @Query("""
-    SELECT j FROM Job j
-    WHERE j.status = 0
-      AND (
-           LOWER(j.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
-        OR LOWER(j.location) LIKE LOWER(CONCAT('%', :keyword, '%'))
-        OR j.companyId IN :companyIds
-      )
-""")
+                SELECT j FROM Job j
+                WHERE j.status = 0
+                  AND (
+                       LOWER(j.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                    OR LOWER(j.location) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                    OR j.companyId IN :companyIds
+                  )
+            """)
     Page<Job> searchJobs(@Param("keyword") String keyword,
                          @Param("companyIds") List<Long> companyIds,
                          Pageable pageable);

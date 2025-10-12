@@ -33,7 +33,9 @@ public class Job {
     @Column(length = 255)
     private String location;
 
-    /** 1 = 全职，2 = 兼职/实习，3 = 远程/合同等（与前端/协议保持一致） */
+    /**
+     * 1 = 全职，2 = 兼职/实习，3 = 远程/合同等（与前端/协议保持一致）
+     */
     @Column(name = "employment_type", nullable = false)
     private Integer employmentType = 1;
 
@@ -46,7 +48,9 @@ public class Job {
     @Lob
     private String description;
 
-    /** 0 = 有效，1 = 无效/下线 */
+    /**
+     * 0 = 有效，1 = 无效/下线
+     */
     @Column(nullable = false)
     private Integer status = 0;
 
