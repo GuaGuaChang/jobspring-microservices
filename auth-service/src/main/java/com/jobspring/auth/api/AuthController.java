@@ -2,10 +2,8 @@ package com.jobspring.auth.api;
 
 import com.jobspring.auth.account.Account;
 import com.jobspring.auth.account.AccountRepo;
-import com.jobspring.auth.dto.AuthResponse;
-import com.jobspring.auth.dto.LoginRequest;
-import com.jobspring.auth.dto.RegisterRequest;
-import com.jobspring.auth.dto.UserDTO;
+import com.jobspring.auth.dto.*;
+import com.jobspring.auth.service.VerificationService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -14,6 +12,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -29,6 +28,7 @@ import java.util.Date;
 public class AuthController {
     private final AccountRepo accounts;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final VerificationService verificationService;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -41,7 +41,7 @@ public class AuthController {
                 .ifPresent(a -> {
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "email exists");
                 });
-
+        verificationService.verifyOrThrow(req.getEmail(), req.getCode());
         var a = new Account();
         a.setEmail(req.getEmail());
         a.setFullName(req.getFullName());
@@ -86,6 +86,11 @@ public class AuthController {
         return new MeResp(a.getId(), a.getEmail(), a.getFullName(), a.getRole());
     }
 
+    @PostMapping("/send-code")
+    public ResponseEntity<Void> sendCode(@Valid @RequestBody SendCodeRequestDTO req) {
+        verificationService.sendRegisterCode(req.getEmail());
+        return ResponseEntity.noContent().build();
+    }
 
     @Data
     public static class IdResp {
