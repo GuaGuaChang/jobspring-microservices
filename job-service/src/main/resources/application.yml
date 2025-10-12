@@ -7,6 +7,30 @@ spring:
     nacos:
       discovery:
         server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/jobspring_job?useSSL=false&serverTimezone=Asia/Singapore&characterEncoding=utf8
+    username: jobspring_user
+    password: jobspring_pass
+
+    jpa:
+      hibernate:
+        ddl-auto: validate     # ✅ 正确 — 校验表结构是否与实体一致
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.MySQL8Dialect
+
+    flyway:
+      enabled: true
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.springframework.web.servlet: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+
+
 management:
   tracing:
     sampling:
