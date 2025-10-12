@@ -10,21 +10,24 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificationExecutor<Job> {
     Page<Job> findByStatus(@Param("status") Integer status, Pageable pageable);
 
     @Query("""
-    SELECT j FROM Job j
-    WHERE j.status = 0
-      AND (
-           LOWER(j.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
-        OR LOWER(j.location) LIKE LOWER(CONCAT('%', :keyword, '%'))
-        OR j.companyId IN :companyIds
-      )
-""")
+                SELECT j FROM Job j
+                WHERE j.status = 0
+                  AND (
+                       LOWER(j.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                    OR LOWER(j.location) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                    OR j.companyId IN :companyIds
+                  )
+            """)
     Page<Job> searchJobs(@Param("keyword") String keyword,
                          @Param("companyIds") List<Long> companyIds,
                          Pageable pageable);
+
+    Optional<Job> findByIdAndCompanyId(Long jobId, Long companyId);
 }

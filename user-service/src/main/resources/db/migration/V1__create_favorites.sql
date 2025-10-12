@@ -9,4 +9,4 @@ CREATE TABLE job_favorites
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE INDEX IDX_job_fav_user ON job_favorites (user_id);
-CREATE INDEX IDX_job_fav_job  ON job_favorites (job_id);
+CREATE INDEX IDX_job_fav_job ON job_favorites (job_id);

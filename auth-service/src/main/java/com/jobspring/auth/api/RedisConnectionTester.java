@@ -1,4 +1,5 @@
 package com.jobspring.auth.api;
+
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;

@@ -1,4 +1,4 @@
-package com.jobspring.user.security;
+package com.jobspring.company.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

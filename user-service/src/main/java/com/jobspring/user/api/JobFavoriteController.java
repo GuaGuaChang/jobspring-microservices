@@ -11,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 
-
 @RestController
 @RequestMapping("/job_favorites")
 @RequiredArgsConstructor
@@ -44,4 +43,6 @@ public class JobFavoriteController {
         Long userId = Long.valueOf(auth.getName());
         return ResponseEntity.ok(favoriteService.list(userId, pageable));
     }
+
+
 }
