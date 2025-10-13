@@ -98,6 +98,7 @@ public class AuthController {
         authService.makeHr(userId, req);
         return ResponseEntity.noContent().build();
     }
+
     @PostMapping("/send-code")
     public ResponseEntity<Void> sendCode(@Valid @RequestBody SendCodeRequestDTO req) {
         verificationService.sendRegisterCode(req.getEmail());

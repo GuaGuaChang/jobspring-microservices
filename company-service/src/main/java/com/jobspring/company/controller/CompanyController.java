@@ -63,6 +63,7 @@ public class CompanyController {
         Page<CompanyDTO> companies = companyService.getAllCompanies(pageable);
         return ResponseEntity.ok(companies);
     }
+
     // 创建公司
     @PostMapping
     public Company createCompany(@RequestBody Company req) {

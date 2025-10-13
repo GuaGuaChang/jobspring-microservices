@@ -23,6 +23,6 @@ public class Account {
     private Integer role;                 // 0,1,2
     @Column(nullable = false, name = "is_active")
     private Boolean active;
-    @Column(name="company_id")
+    @Column(name = "company_id")
     private Long companyId;
 }
