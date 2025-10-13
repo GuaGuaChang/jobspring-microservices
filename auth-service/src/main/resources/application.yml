@@ -8,6 +8,24 @@ spring:
     nacos:
       discovery:
         server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: 1649182810@qq.com
+    password: tpywidoemlinfagh
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+  data:
+    redis:
+      host: host.docker.internal
+      port: 6379
+      password:
+      timeout: 2000ms
 
   datasource:
     url: jdbc:mysql://localhost:3307/jobspring_auth?useSSL=false&serverTimezone=Asia/Singapore&characterEncoding=utf8
@@ -21,6 +39,10 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
   flyway:
     enabled: true
+
+app:
+  mail:
+    from: 1649182810@qq.com
 
 management:
   tracing:

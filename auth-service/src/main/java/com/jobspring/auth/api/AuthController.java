@@ -4,6 +4,8 @@ import com.jobspring.auth.account.Account;
 import com.jobspring.auth.account.AccountRepo;
 import com.jobspring.auth.dto.*;
 import com.jobspring.auth.service.AuthService;
+import com.jobspring.auth.dto.*;
+import com.jobspring.auth.service.VerificationService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -30,6 +32,7 @@ import java.util.Date;
 public class AuthController {
     private final AccountRepo accounts;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final VerificationService verificationService;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -44,7 +47,7 @@ public class AuthController {
                 .ifPresent(a -> {
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "email exists");
                 });
-
+        verificationService.verifyOrThrow(req.getEmail(), req.getCode());
         var a = new Account();
         a.setEmail(req.getEmail());
         a.setFullName(req.getFullName());
@@ -93,6 +96,11 @@ public class AuthController {
     public ResponseEntity<Void> makeHr(@PathVariable("userId") Long userId,
                                        @RequestBody(required = false) @Valid PromoteToHrRequest req) {
         authService.makeHr(userId, req);
+        return ResponseEntity.noContent().build();
+    }
+    @PostMapping("/send-code")
+    public ResponseEntity<Void> sendCode(@Valid @RequestBody SendCodeRequestDTO req) {
+        verificationService.sendRegisterCode(req.getEmail());
         return ResponseEntity.noContent().build();
     }
 

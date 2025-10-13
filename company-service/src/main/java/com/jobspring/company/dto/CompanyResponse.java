@@ -1,16 +1,15 @@
 package com.jobspring.company.dto;
 
-
-import jakarta.persistence.Column;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class CompanyDTO {
+@NoArgsConstructor
+@AllArgsConstructor
+public class CompanyResponse {
     private Long id;
     private String name;
-    private String website;
-    private Integer size;
     private String logoUrl;
     private String description;
-    private String createdBy;
 }
