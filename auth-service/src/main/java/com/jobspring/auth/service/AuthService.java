@@ -64,6 +64,7 @@ public class AuthService {
 
         accountRepository.save(u);
     }
+
     public Page<UserDTO> searchUsers(String q, Pageable pageable) {
         if (q == null || q.isBlank()) {
             return accountRepository.findAll(pageable).map(this::toDTO);

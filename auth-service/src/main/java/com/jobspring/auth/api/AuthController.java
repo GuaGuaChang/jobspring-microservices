@@ -117,6 +117,7 @@ public class AuthController {
 
     public record MeResp(Long id, String email, String fullName, Integer role) {
     }
+
     @GetMapping("/search")
     public PageResponse<UserDTO> search(
             @RequestParam(value = "q", required = false) String q,

@@ -6,15 +6,16 @@ import org.springframework.data.jpa.domain.Specification;
 
 public final class UserSpecs {
 
-    private UserSpecs() {}
+    private UserSpecs() {
+    }
 
     public static Specification<Account> fuzzySearch(String raw) {
         return (root, query, cb) -> {
             String escaped = escapeLike(raw.toLowerCase());
             String pattern = "%" + escaped + "%";
-            
+
             var emailLike = cb.like(cb.lower(root.get("email")), pattern, '\\');
-            var nameLike  = cb.like(cb.lower(root.get("fullName")), pattern, '\\');
+            var nameLike = cb.like(cb.lower(root.get("fullName")), pattern, '\\');
 
 
             Predicate idPredicate;
