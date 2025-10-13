@@ -1,0 +1,3 @@
+ALTER TABLE accounts
+    MODIFY COLUMN role INT NOT NULL DEFAULT 0
+    COMMENT '0=Candidate 1=HR 2=Admin';
