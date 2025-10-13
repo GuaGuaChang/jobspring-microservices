@@ -26,12 +26,14 @@ public class SecurityConfig {
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         // 仅忽略这些路径的 CSRF 校验：运维端点、只读 GET、公开资源等
                         .ignoringRequestMatchers(
+                                new AntPathRequestMatcher("/companies/**"),
                                 new AntPathRequestMatcher("/actuator/**")
                         )
                 )
 
                 .authorizeHttpRequests(reg -> reg
                         .requestMatchers("/actuator/**", "/public/**").permitAll()
+                        .requestMatchers("/companies/**").permitAll()
                         .anyRequest().authenticated()
                 )
 

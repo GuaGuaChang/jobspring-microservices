@@ -3,14 +3,22 @@ package com.jobspring.auth.api;
 import com.jobspring.auth.account.Account;
 import com.jobspring.auth.account.AccountRepo;
 import com.jobspring.auth.dto.*;
+import com.jobspring.auth.service.AuthService;
+import com.jobspring.auth.dto.*;
 import com.jobspring.auth.service.VerificationService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,6 +44,8 @@ public class AuthController {
     @Value("${jwt.ttl-minutes}")
     private long ttlMinutes;
 
+    private final AuthService authService;
+
     @PostMapping("/register")
     public IdResp register(@Valid @RequestBody RegisterRequest req) {
         accounts.findByEmail(req.getEmail())
@@ -46,7 +57,7 @@ public class AuthController {
         a.setEmail(req.getEmail());
         a.setFullName(req.getFullName());
         a.setPasswordHash(encoder.encode(req.getPassword()));
-        a.setRole((byte) 0);
+        a.setRole(0);
         a.setActive(true);
         a = accounts.save(a);
         return new IdResp(a.getId());
@@ -86,6 +97,13 @@ public class AuthController {
         return new MeResp(a.getId(), a.getEmail(), a.getFullName(), a.getRole());
     }
 
+    @PostMapping("/{userId}/make-hr")
+    public ResponseEntity<Void> makeHr(@PathVariable("userId") Long userId,
+                                       @RequestBody(required = false) @Valid PromoteToHrRequest req) {
+        authService.makeHr(userId, req);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/send-code")
     public ResponseEntity<Void> sendCode(@Valid @RequestBody SendCodeRequestDTO req) {
         verificationService.sendRegisterCode(req.getEmail());
@@ -97,6 +115,27 @@ public class AuthController {
         private final Long id;
     }
 
-    public record MeResp(Long id, String email, String fullName, Byte role) {
+    public record MeResp(Long id, String email, String fullName, Integer role) {
+    }
+
+    @GetMapping("/search")
+    public PageResponse<UserDTO> search(
+            @RequestParam(value = "q", required = false) String q,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam(value = "sort", required = false) List<String> sort) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(
+                (sort == null ? List.<String>of() : sort).stream()
+                        .map(s -> {
+                            String[] arr = s.split(",", 2);
+                            String prop = arr[0];
+                            Sort.Direction dir = (arr.length > 1 ? Sort.Direction.fromString(arr[1]) : Sort.Direction.ASC);
+                            return new Sort.Order(dir, prop);
+                        }).toList()
+        ));
+
+        Page<UserDTO> p = authService.searchUsers(q, pageable);
+        return PageResponse.from(p);
     }
 }

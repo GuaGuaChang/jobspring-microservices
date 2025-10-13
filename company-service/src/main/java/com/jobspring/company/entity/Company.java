@@ -1,6 +1,5 @@
 package com.jobspring.company.entity;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +20,7 @@ public class Company {
     @Column(length = 255)
     private String website;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer size; // 人数（估算）
 
     @Column(name = "logo_url", length = 512)

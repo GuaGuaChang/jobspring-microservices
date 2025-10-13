@@ -26,13 +26,16 @@ public class SecurityConfig {
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         // 仅忽略这些路径的 CSRF 校验
                         .ignoringRequestMatchers(
+                                new AntPathRequestMatcher("/companies/**"),
                                 new AntPathRequestMatcher("/actuator/**")
                         )
                 )
 
                 .authorizeHttpRequests(reg -> reg
                         .requestMatchers("/actuator/**", "/public/**").permitAll()
+                        .requestMatchers("/companies/**").permitAll()
                         .anyRequest().authenticated()
+
                 )
 
                 // 你的 Header 认证过滤器（确保能把角色写成 ROLE_ADMIN / ROLE_XXX）

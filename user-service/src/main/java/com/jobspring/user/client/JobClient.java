@@ -1,12 +1,11 @@
 package com.jobspring.user.client;
 
+import com.jobspring.user.dto.JobCreateRequest;
+import com.jobspring.user.dto.JobResponse;
 import com.jobspring.user.dto.JobSummaryResponse;
-import lombok.Data;
+import com.jobspring.user.dto.JobUpdateRequest;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import java.time.LocalDateTime;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "job-service")
 public interface JobClient {
@@ -17,4 +16,13 @@ public interface JobClient {
     @GetMapping("/{jobId}/summary")
     JobSummaryResponse getJobSummary(@PathVariable("jobId") Long jobId);
 
+    @PostMapping("/companies/{companyId}")
+    JobResponse createJob(@PathVariable("companyId") Long companyId,
+                          @RequestBody JobCreateRequest req);
+
+    @PostMapping("/companies/{companyId}/jobs/{jobId}")
+    JobResponse updateJob(
+            @PathVariable("companyId") Long companyId,
+            @PathVariable("jobId") Long jobId,
+            @RequestBody JobUpdateRequest req);
 }

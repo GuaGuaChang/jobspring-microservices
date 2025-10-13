@@ -10,6 +10,16 @@ import lombok.NoArgsConstructor;
 public class UserDTO {
     private Long id;
     private String email;
+    private String phone;
     private String fullName;
-    private Byte role;
+    private Integer role;
+    private Boolean isActive;
+    private Long companyId;
+
+    public UserDTO(Long id, String email, String fullName, Integer role) {
+        this.id = id;
+        this.email = email;
+        this.fullName = fullName;
+        this.role = role;
+    }
 }
