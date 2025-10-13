@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/**", "/public/**").permitAll()
                         .requestMatchers("/companies/**").permitAll()
                         .anyRequest().authenticated()
+
                 )
 
                 // 你的 Header 认证过滤器（确保能把角色写成 ROLE_ADMIN / ROLE_XXX）

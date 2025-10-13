@@ -3,6 +3,7 @@ package com.jobspring.user.controller;
 import com.jobspring.user.client.JobClient;
 import com.jobspring.user.dto.JobCreateRequest;
 import com.jobspring.user.dto.JobResponse;
+import com.jobspring.user.dto.JobUpdateRequest;
 import com.jobspring.user.client.AuthUserClient;
 import com.jobspring.user.dto.PageResponse;
 import com.jobspring.user.dto.PromoteToHrRequest;
@@ -19,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 
 import java.util.List;
 
@@ -70,4 +70,15 @@ public class UserController {
         JobResponse res = jobClient.createJob(companyId, req);
         return ResponseEntity.ok(res);
     }
+
+    @PreAuthorize("hasRole('HR')")
+    @PostMapping("/companies/{companyId}/jobs/{jobId}")
+    public ResponseEntity<JobResponse> updateJob(
+            @PathVariable Long companyId,
+            @PathVariable Long jobId,
+            @RequestBody JobUpdateRequest req) {
+        JobResponse res = jobClient.updateJob(companyId, jobId, req);
+        return ResponseEntity.ok(res);
+    }
+
 }
