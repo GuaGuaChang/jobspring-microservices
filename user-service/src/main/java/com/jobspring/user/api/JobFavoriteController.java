@@ -44,5 +44,13 @@ public class JobFavoriteController {
         return ResponseEntity.ok(favoriteService.list(userId, pageable));
     }
 
+    // 是否已收藏
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @GetMapping("/{jobId}/is-favorited")
+    public ResponseEntity<Boolean> isFavorited(@PathVariable Long jobId, Authentication auth) {
+        Long userId = Long.valueOf(auth.getName());
+        return ResponseEntity.ok(favoriteService.isFavorited(userId, jobId));
+    }
+
 
 }

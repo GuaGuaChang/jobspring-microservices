@@ -24,7 +24,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                         // 把 CSRF token 放在 Cookie 里（前端需要时可读，withHttpOnlyFalse）
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        // 仅忽略这些路径的 CSRF 校验：运维端点、只读 GET、公开资源等
+                        // 仅忽略这些路径的 CSRF 校验
                         .ignoringRequestMatchers(
                                 new AntPathRequestMatcher("/actuator/**")
                         )

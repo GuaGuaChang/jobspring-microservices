@@ -158,4 +158,40 @@ public class JobService {
         //applicationRepository.updateStatusByJobId(jobId, 4);
     }
 
+/*    // 根据 userId 找到 HR 所属的公司
+    public Long findCompanyIdByUserId(Long userId) {
+        try {
+            var resp = companyMemberClient.getCompanyIdByHr(userId);
+            if (resp == null || resp.getCompanyId() == null) {
+                throw new EntityNotFoundException("HR membership not found");
+            }
+            return resp.getCompanyId();
+        } catch (FeignException.NotFound e) {
+            throw new EntityNotFoundException("HR membership not found");
+        }
+    }
+
+    // HR 查看本公司岗位（包含上下线）
+    public Page<JobResponse> listJobs(Long companyId, Integer status, Pageable pageable) {
+        Page<Job> page = (status == null)
+                ? jobRepository.findByCompanyId(companyId, pageable)
+                : jobRepository.findByCompanyIdAndStatus(companyId, status, pageable);
+        return page.map(this::toResponse);
+    }
+
+    private JobResponse toResponse(Job j) {
+        JobResponse r = new JobResponse();
+        r.setId(j.getId());
+        r.setCompanyId(j.getCompany().getId());
+        r.setTitle(j.getTitle());
+        r.setLocation(j.getLocation());
+        r.setEmploymentType(j.getEmploymentType());
+        r.setSalaryMin(j.getSalaryMin());
+        r.setSalaryMax(j.getSalaryMax());
+        r.setDescription(j.getDescription());
+        r.setStatus(j.getStatus());
+        r.setPostedAt(j.getPostedAt());
+        return r;
+    }*/
+
 }

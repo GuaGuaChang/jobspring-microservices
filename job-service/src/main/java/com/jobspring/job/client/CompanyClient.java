@@ -3,6 +3,7 @@ package com.jobspring.job.client;
 
 import com.jobspring.job.dto.CompanyDTO;
 import com.jobspring.job.dto.CompanyFavouriteResponse;
+import com.jobspring.job.dto.CompanyIdResponse;
 import com.jobspring.job.dto.CompanyResponse;
 
 import org.springframework.cloud.openfeign.FeignClient;
@@ -25,4 +26,7 @@ public interface CompanyClient {
 
     @PostMapping("/batch")
     Map<Long, CompanyDTO> findByIds(@RequestBody List<Long> ids);
+
+    @GetMapping("/hr/{userId}/company-id")
+    CompanyIdResponse getCompanyIdByHr(@PathVariable("userId") Long userId);
 }

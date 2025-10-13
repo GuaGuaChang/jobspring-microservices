@@ -2,6 +2,7 @@ package com.jobspring.job.api;
 
 import com.jobspring.job.dto.JobDTO;
 import com.jobspring.job.client.AuthClient;
+import com.jobspring.job.dto.JobResponse;
 import com.jobspring.job.dto.JobSummaryResponse;
 import com.jobspring.job.entity.Job;
 import com.jobspring.job.service.JobService;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -90,5 +92,16 @@ public class JobController {
         jobService.deactivateJob(companyId, jobId);
         return ResponseEntity.noContent().build();
     }
+
+/*    // 查看岗位
+    @PreAuthorize("hasRole('HR')")
+    @GetMapping("/companies/jobs")
+    public ResponseEntity<Page<JobResponse>> list(Pageable pageable,
+                                                  @RequestParam(required = false) Integer status,
+                                                  Authentication auth) {
+        Long userId = Long.valueOf(auth.getName());
+        Long companyId = jobService.findCompanyIdByUserId(userId);
+        return ResponseEntity.ok(jobService.listJobs(companyId, status, pageable));
+    }*/
 
 }
