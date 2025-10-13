@@ -33,6 +33,7 @@ public class JwtAuthFilter implements WebFilter {
         if (HttpMethod.OPTIONS.equals(method) ||
                 path.equals("/api/auth/login") ||
                 path.equals("/api/auth/register") ||
+                path.equals("/api/auth/send-code") ||
                 path.equals("/api/ping") ||
                 path.startsWith("/actuator")) {
             return chain.filter(exchange);
