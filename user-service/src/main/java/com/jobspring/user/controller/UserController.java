@@ -13,10 +13,11 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PatchMapping("/{userId}/make-hr")
+    @PostMapping("/{userId}/make-hr")
     public ResponseEntity<Void> makeHr(@PathVariable("userId") Long userId,
                                        @RequestBody(required = false) PromoteToHrRequest req) {
         userService.makeHr(userId, req);
         return ResponseEntity.noContent().build();
     }
+
 }

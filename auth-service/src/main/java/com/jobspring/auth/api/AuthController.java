@@ -89,8 +89,8 @@ public class AuthController {
         return new MeResp(a.getId(), a.getEmail(), a.getFullName(), a.getRole());
     }
 
-    @PatchMapping("/{userId}/make-hr")
-    public ResponseEntity<Void> makeHr(@PathVariable Long userId,
+    @PostMapping("/{userId}/make-hr")
+    public ResponseEntity<Void> makeHr(@PathVariable("userId") Long userId,
                                        @RequestBody(required = false) @Valid PromoteToHrRequest req) {
         authService.makeHr(userId, req);
         return ResponseEntity.noContent().build();

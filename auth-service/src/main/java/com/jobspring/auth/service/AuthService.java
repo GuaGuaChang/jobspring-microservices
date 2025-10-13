@@ -18,16 +18,14 @@ public class AuthService {
     private static final int ROLE_ADMIN = 2;
 
     private final AccountRepo accountRepository;
-    private final CompanyClient companyClient;
+
 
     public void makeHr(Long userId, PromoteToHrRequest req) {
         Long companyId = null;
 
 
-        if (req != null && req.getCompanyId() != null) {
-            var view = companyClient.getById(req.getCompanyId());
-            companyId = view.getId();
-        }
+        companyId = req.getCompanyId();
+
 
         doPromoteHr(userId, companyId, req == null ? null : req.getOverwriteCompany());
     }
