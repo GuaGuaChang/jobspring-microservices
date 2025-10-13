@@ -192,4 +192,36 @@ public class JobService {
         return res;
     }
 
+    @Transactional
+    public JobResponse updateJob(Long companyId, Long jobId, JobUpdateRequest req) {
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new RuntimeException("Job not found"));
+
+        if (!job.getCompanyId().equals(companyId)) {
+            throw new RuntimeException("Job does not belong to company " + companyId);
+        }
+
+        if (req.getSalaryMin() != null) job.setSalaryMin(req.getSalaryMin());
+        if (req.getSalaryMax() != null) job.setSalaryMax(req.getSalaryMax());
+        if (req.getDescription() != null && !req.getDescription().isBlank())
+            job.setDescription(req.getDescription());
+
+        jobRepository.save(job);
+        return toResponse(job);
+    }
+
+    private JobResponse toResponse(Job job) {
+        JobResponse res = new JobResponse();
+        res.setId(job.getId());
+        res.setCompanyId(job.getCompanyId());
+        res.setTitle(job.getTitle());
+        res.setLocation(job.getLocation());
+        res.setEmploymentType(job.getEmploymentType());
+        res.setSalaryMin(job.getSalaryMin());
+        res.setSalaryMax(job.getSalaryMax());
+        res.setDescription(job.getDescription());
+        res.setStatus(job.getStatus());
+        res.setPostedAt(job.getPostedAt());
+        return res;
+    }
 }

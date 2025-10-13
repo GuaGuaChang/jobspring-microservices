@@ -1,11 +1,7 @@
 package com.jobspring.job.api;
 
-import com.jobspring.job.dto.JobCreateRequest;
-import com.jobspring.job.dto.JobDTO;
+import com.jobspring.job.dto.*;
 import com.jobspring.job.client.AuthClient;
-import com.jobspring.job.dto.JobResponse;
-import com.jobspring.job.dto.JobSummaryResponse;
-import com.jobspring.job.entity.Job;
 import com.jobspring.job.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,16 +9,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -100,6 +92,7 @@ public class JobController {
         return jobService.getJobById(id);
     }
 
+    //供user-service 调用
     @PostMapping("/companies/{companyId}")
     public ResponseEntity<JobResponse> createJob(
             @PathVariable Long companyId,
@@ -109,4 +102,14 @@ public class JobController {
         return ResponseEntity.ok(res);
     }
 
+    //供user-service 调用
+    @PostMapping("/companies/{companyId}/jobs/{jobId}")
+    public ResponseEntity<JobResponse> updateJob(
+            @PathVariable Long companyId,
+            @PathVariable Long jobId,
+            @RequestBody JobUpdateRequest req) {
+
+        JobResponse res = jobService.updateJob(companyId, jobId, req);
+        return ResponseEntity.ok(res);
+    }
 }
