@@ -4,6 +4,7 @@ package com.jobspring.company.dto;
 import jakarta.persistence.Column;
 import lombok.Data;
 
+
 @Data
 public class CompanyDTO {
     private Long id;
@@ -13,4 +14,8 @@ public class CompanyDTO {
     private String logoUrl;
     private String description;
     private String createdBy;
+
+    public CompanyDTO() {
+
+    }
 }
