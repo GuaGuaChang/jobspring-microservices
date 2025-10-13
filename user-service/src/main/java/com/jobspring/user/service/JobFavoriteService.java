@@ -56,4 +56,8 @@ public class JobFavoriteService {
                     return r;
                 });
     }
+
+    public boolean isFavorited(Long userId, Long jobId) {
+        return favoriteRepository.existsByUserIdAndJobId(userId, jobId);
+    }
 }

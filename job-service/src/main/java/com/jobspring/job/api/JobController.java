@@ -2,6 +2,9 @@ package com.jobspring.job.api;
 
 import com.jobspring.job.dto.*;
 import com.jobspring.job.client.AuthClient;
+import com.jobspring.job.dto.JobResponse;
+import com.jobspring.job.dto.JobSummaryResponse;
+import com.jobspring.job.entity.Job;
 import com.jobspring.job.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,12 +12,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -86,6 +93,17 @@ public class JobController {
         jobService.deactivateJob(companyId, jobId);
         return ResponseEntity.noContent().build();
     }
+
+/*    // 查看岗位
+    @PreAuthorize("hasRole('HR')")
+    @GetMapping("/companies/jobs")
+    public ResponseEntity<Page<JobResponse>> list(Pageable pageable,
+                                                  @RequestParam(required = false) Integer status,
+                                                  Authentication auth) {
+        Long userId = Long.valueOf(auth.getName());
+        Long companyId = jobService.findCompanyIdByUserId(userId);
+        return ResponseEntity.ok(jobService.listJobs(companyId, status, pageable));
+    }*/
 
     @GetMapping("/{id}")
     public JobDTO getJobById(@PathVariable Long id) {
