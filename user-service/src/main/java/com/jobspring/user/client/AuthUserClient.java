@@ -26,6 +26,6 @@ public interface AuthUserClient {
             @RequestParam(value = "sort", required = false) List<String> sort
     );
 
-    @GetMapping("/{userId}")
-    UserView getUserById(@PathVariable("userId") Long userId);
+    @GetMapping(value = "/me", consumes = MediaType.APPLICATION_JSON_VALUE)
+    UserView getCurrentUser(@RequestHeader("X-User-Id") String uid);
 }

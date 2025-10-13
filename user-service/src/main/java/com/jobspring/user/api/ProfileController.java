@@ -8,6 +8,7 @@ import com.jobspring.user.dto.UserView;
 import com.jobspring.user.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -21,27 +22,29 @@ public class ProfileController {
     @Autowired
     private AuthUserClient authUserClient;
 
+    @PreAuthorize("hasRole('CANDIDATE')")
     @GetMapping
     public ProfileResponseDTO getMyProfile(
             @RequestHeader(value = "X-User-Id", required = false) String uidHeader) {
 
+        System.out.println(">>> X-User-Id=" + uidHeader);
         if (uidHeader == null)
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing X-User-Id header");
 
-        Long userId;
+        UserView user;
         try {
-            userId = Long.parseLong(uidHeader);
-        } catch (NumberFormatException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user ID header format");
+            user = authUserClient.getCurrentUser(uidHeader);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Auth-service validation failed: " + e.getMessage());
         }
 
-        UserView user = authUserClient.getUserById(userId);
         if (user == null)
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found in auth-service");
 
-        return profileService.getCompleteProfile(userId);
+        return profileService.getCompleteProfile(user.getId());
     }
 
+    @PreAuthorize("hasRole('CANDIDATE')")
     @PostMapping
     public ProfileUpdateResponseDTO createOrUpdateProfile(
             @RequestHeader(value = "X-User-Id", required = false) String uidHeader,
@@ -50,17 +53,16 @@ public class ProfileController {
         if (uidHeader == null)
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing X-User-Id header");
 
-        Long userId;
+        UserView user;
         try {
-            userId = Long.parseLong(uidHeader);
-        } catch (NumberFormatException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user ID header format");
+            user = authUserClient.getCurrentUser(uidHeader);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Auth-service validation failed: " + e.getMessage());
         }
 
-        UserView user = authUserClient.getUserById(userId);
         if (user == null)
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid user ID");
 
-        return profileService.createOrUpdateProfile(userId, request);
+        return profileService.createOrUpdateProfile(user.getId(), request);
     }
 }
