@@ -20,7 +20,9 @@ public class Account {
     @Column(nullable = false, name = "full_name")
     private String fullName;
     @Column(nullable = false)
-    private Byte role;                 // 0,1,2
+    private Integer role;                 // 0,1,2
     @Column(nullable = false, name = "is_active")
     private Boolean active;
+    @Column(name="company_id")
+    private Long companyId;
 }

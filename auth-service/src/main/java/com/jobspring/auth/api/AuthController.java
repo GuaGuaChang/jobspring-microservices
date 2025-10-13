@@ -2,18 +2,19 @@ package com.jobspring.auth.api;
 
 import com.jobspring.auth.account.Account;
 import com.jobspring.auth.account.AccountRepo;
-import com.jobspring.auth.dto.AuthResponse;
-import com.jobspring.auth.dto.LoginRequest;
-import com.jobspring.auth.dto.RegisterRequest;
-import com.jobspring.auth.dto.UserDTO;
+import com.jobspring.auth.dto.*;
+import com.jobspring.auth.service.AuthService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -35,6 +36,8 @@ public class AuthController {
     @Value("${jwt.ttl-minutes}")
     private long ttlMinutes;
 
+    private final AuthService authService;
+
     @PostMapping("/register")
     public IdResp register(@Valid @RequestBody RegisterRequest req) {
         accounts.findByEmail(req.getEmail())
@@ -46,7 +49,7 @@ public class AuthController {
         a.setEmail(req.getEmail());
         a.setFullName(req.getFullName());
         a.setPasswordHash(encoder.encode(req.getPassword()));
-        a.setRole((byte) 0);
+        a.setRole(0);
         a.setActive(true);
         a = accounts.save(a);
         return new IdResp(a.getId());
@@ -86,12 +89,18 @@ public class AuthController {
         return new MeResp(a.getId(), a.getEmail(), a.getFullName(), a.getRole());
     }
 
+    @PatchMapping("/{userId}/make-hr")
+    public ResponseEntity<Void> makeHr(@PathVariable Long userId,
+                                       @RequestBody(required = false) @Valid PromoteToHrRequest req) {
+        authService.makeHr(userId, req);
+        return ResponseEntity.noContent().build();
+    }
 
     @Data
     public static class IdResp {
         private final Long id;
     }
 
-    public record MeResp(Long id, String email, String fullName, Byte role) {
+    public record MeResp(Long id, String email, String fullName, Integer role) {
     }
 }
