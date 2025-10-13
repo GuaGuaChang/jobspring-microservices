@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.*;
 
 @FeignClient("auth-service")
 public interface AuthUserClient {
-
-//    @GetMapping("/{userId}")
-//    UserView getUser(@PathVariable("userId") Long userId);
-
     @PostMapping(value = "/{userId}/make-hr",
             consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Void> promoteToHr(@PathVariable("userId") Long userId,
                                      @RequestBody(required = false) PromoteToHrRequest req);
+
+    @GetMapping("/{userId}")
+    UserView getUserById(@PathVariable("userId") Long userId);
 }
