@@ -18,4 +18,8 @@ public class CompanyDTO {
     public CompanyDTO() {
 
     }
+    public CompanyDTO(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }
