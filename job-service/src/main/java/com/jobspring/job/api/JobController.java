@@ -1,10 +1,13 @@
 package com.jobspring.job.api;
 
+import com.jobspring.job.dto.JobCreateRequest;
 import com.jobspring.job.dto.JobDTO;
 import com.jobspring.job.client.AuthClient;
+import com.jobspring.job.dto.JobResponse;
 import com.jobspring.job.dto.JobSummaryResponse;
 import com.jobspring.job.entity.Job;
 import com.jobspring.job.service.JobService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +93,20 @@ public class JobController {
                                            @PathVariable Long jobId) {
         jobService.deactivateJob(companyId, jobId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public JobDTO getJobById(@PathVariable Long id) {
+        return jobService.getJobById(id);
+    }
+
+    @PostMapping("/companies/{companyId}")
+    public ResponseEntity<JobResponse> createJob(
+            @PathVariable Long companyId,
+            @Valid @RequestBody JobCreateRequest req) {
+
+        JobResponse res = jobService.createJob(companyId, req);
+        return ResponseEntity.ok(res);
     }
 
 }
