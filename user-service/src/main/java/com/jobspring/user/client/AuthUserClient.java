@@ -1,11 +1,15 @@
 package com.jobspring.user.client;
 
+import com.jobspring.user.dto.PageResponse;
 import com.jobspring.user.dto.PromoteToHrRequest;
+import com.jobspring.user.dto.UserDTO;
 import com.jobspring.user.dto.UserView;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @FeignClient("auth-service")
 public interface AuthUserClient {
@@ -17,4 +21,12 @@ public interface AuthUserClient {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Void> promoteToHr(@PathVariable("userId") Long userId,
                                      @RequestBody(required = false) PromoteToHrRequest req);
+
+    @GetMapping("/search")
+    PageResponse<UserDTO> search(
+            @RequestParam(value = "q", required = false) String q,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam(value = "sort", required = false) List<String> sort
+    );
 }

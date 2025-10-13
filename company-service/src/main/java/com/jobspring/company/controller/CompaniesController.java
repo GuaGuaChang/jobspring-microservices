@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,20 +26,16 @@ import java.util.Set;
 import java.util.UUID;
 
 @RestController
-//@RequiredArgsConstructor
-public class CompanyController {
+@RequiredArgsConstructor
+public class CompaniesController {
 
     private final CompanyRepository companyRepository;
 
 
     private final CompanyService companyService;
 
-    public CompanyController(CompanyRepository companyRepository, CompanyService companyService) {
-        this.companyRepository = companyRepository;
-        this.companyService = companyService;
-    }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CompanyDTO> createCompany(
             @RequestPart("company") CompanyDTO companyDTO,
@@ -91,7 +88,7 @@ public class CompanyController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCompany);
     }
 
-    @GetMapping("/company/list")
+    @GetMapping("/list")
     public ResponseEntity<Page<CompanyDTO>> getAllCompanies(Pageable pageable) {
         Page<CompanyDTO> companies = companyService.getAllCompanies(pageable);
         return ResponseEntity.ok(companies);
