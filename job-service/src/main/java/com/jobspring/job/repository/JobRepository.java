@@ -30,4 +30,6 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
                          Pageable pageable);
 
     Optional<Job> findByIdAndCompanyId(Long jobId, Long companyId);
+
+    List<Job> findByCompanyId(Long companyId);
 }
