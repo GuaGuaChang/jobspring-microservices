@@ -3,20 +3,31 @@ package com.jobspring.user.controller;
 import com.jobspring.user.client.JobClient;
 import com.jobspring.user.dto.JobCreateRequest;
 import com.jobspring.user.dto.JobResponse;
+import com.jobspring.user.client.AuthUserClient;
+import com.jobspring.user.dto.PageResponse;
 import com.jobspring.user.dto.PromoteToHrRequest;
+import com.jobspring.user.dto.UserDTO;
 import com.jobspring.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final AuthUserClient authUserClient;
 
     private final JobClient jobClient;
 
@@ -27,15 +38,25 @@ public class UserController {
         userService.makeHr(userId, req);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/search_user")
+    public ResponseEntity<Page<UserDTO>> searchUsers(
+            @RequestParam(required = false, name = "q") String q,
+            Pageable pageable) {
 
-    @PreAuthorize("hasRole('HR')")
-    @PostMapping("/companies/{companyId}/jobs")
-    public ResponseEntity<JobResponse> createJob(
-            @PathVariable Long companyId,
-            @Valid @RequestBody JobCreateRequest req) {
+        List<String> sortParams = pageable.getSort().stream()
+                .map(o -> o.getProperty() + "," + o.getDirection())
+                .toList();
+        List<String> sortOrNull = sortParams.isEmpty() ? null : sortParams;
 
-        JobResponse res = jobClient.createJob(companyId, req);
-        return ResponseEntity.ok(res);
+        PageResponse<UserDTO> resp = authUserClient.search(
+                q, pageable.getPageNumber(), pageable.getPageSize(), sortOrNull
+        );
+
+        Page<UserDTO> page = new PageImpl<>(
+                resp.getContent(),
+                PageRequest.of(resp.getPage(), resp.getSize(), pageable.getSort()),
+                resp.getTotalElements()
+        );
+        return ResponseEntity.ok(page);
     }
-
 }
