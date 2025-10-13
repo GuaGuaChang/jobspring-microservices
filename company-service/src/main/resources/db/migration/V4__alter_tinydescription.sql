@@ -1,0 +1,2 @@
+ALTER TABLE companies
+    MODIFY COLUMN description TINYTEXT NULL;

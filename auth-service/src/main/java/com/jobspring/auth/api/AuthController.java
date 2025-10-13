@@ -15,6 +15,10 @@ import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -111,5 +116,25 @@ public class AuthController {
     }
 
     public record MeResp(Long id, String email, String fullName, Integer role) {
+    }
+    @GetMapping("/search")
+    public PageResponse<UserDTO> search(
+            @RequestParam(value = "q", required = false) String q,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam(value = "sort", required = false) List<String> sort) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(
+                (sort == null ? List.<String>of() : sort).stream()
+                        .map(s -> {
+                            String[] arr = s.split(",", 2);
+                            String prop = arr[0];
+                            Sort.Direction dir = (arr.length > 1 ? Sort.Direction.fromString(arr[1]) : Sort.Direction.ASC);
+                            return new Sort.Order(dir, prop);
+                        }).toList()
+        ));
+
+        Page<UserDTO> p = authService.searchUsers(q, pageable);
+        return PageResponse.from(p);
     }
 }
