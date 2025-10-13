@@ -8,4 +8,6 @@ public class UserView {
     private Boolean active;
     private String role;
     private Long companyId;
+    private String email;
+    private String fullName;
 }

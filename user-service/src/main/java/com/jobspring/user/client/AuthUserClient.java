@@ -13,10 +13,6 @@ import java.util.List;
 
 @FeignClient("auth-service")
 public interface AuthUserClient {
-
-//    @GetMapping("/{userId}")
-//    UserView getUser(@PathVariable("userId") Long userId);
-
     @PostMapping(value = "/{userId}/make-hr",
             consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Void> promoteToHr(@PathVariable("userId") Long userId,
@@ -29,4 +25,7 @@ public interface AuthUserClient {
             @RequestParam("size") int size,
             @RequestParam(value = "sort", required = false) List<String> sort
     );
+
+    @GetMapping(value = "/me", consumes = MediaType.APPLICATION_JSON_VALUE)
+    UserView getCurrentUser(@RequestHeader("X-User-Id") String uid);
 }
