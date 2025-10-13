@@ -38,6 +38,7 @@ public class UserController {
         userService.makeHr(userId, req);
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/search_user")
     public ResponseEntity<Page<UserDTO>> searchUsers(
             @RequestParam(required = false, name = "q") String q,
@@ -58,5 +59,15 @@ public class UserController {
                 resp.getTotalElements()
         );
         return ResponseEntity.ok(page);
+    }
+
+    @PreAuthorize("hasRole('HR')")
+    @PostMapping("/companies/{companyId}/jobs")
+    public ResponseEntity<JobResponse> createJob(
+            @PathVariable Long companyId,
+            @Valid @RequestBody JobCreateRequest req) {
+
+        JobResponse res = jobClient.createJob(companyId, req);
+        return ResponseEntity.ok(res);
     }
 }
