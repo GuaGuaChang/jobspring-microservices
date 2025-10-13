@@ -20,6 +20,8 @@ public class CompanyController {
 
     private final CompanyRepository companyRepository;
 
+/*    private final CompanyMemberService companyMemberService;*/
+
     // 提供给 job-service 调用的接口
     @GetMapping("/{id}")
     public ResponseEntity<CompanyResponse> getCompanyById(@PathVariable Long id) {
@@ -45,6 +47,7 @@ public class CompanyController {
                 .toList();
     }
 
+    // 提供给 job-service 调用的接口
     @GetMapping("/job-favourite/{id}")
     public ResponseEntity<CompanyFavouriteResponse> get(@PathVariable Long id) {
         Company c = companyRepository.findById(id)
@@ -56,10 +59,17 @@ public class CompanyController {
         return ResponseEntity.ok(r);
     }
 
+    // 提供给 job-service 调用的接口
     @PostMapping("/batch")
     public Map<Long, CompanyDTO> batch(@RequestBody List<Long> ids) {
         return companyRepository.findAllById(ids).stream()
                 .collect(Collectors.toMap(Company::getId,
                         c -> new CompanyDTO(c.getId(), c.getName())));
     }
+/*
+    @GetMapping("/hr/{userId}/company-id")
+    public Map<String, Long> getCompanyIdByHr(@PathVariable Long userId) {
+        Long companyId = companyMemberService.getCompanyIdForHr(userId);
+        return Map.of("companyId", companyId);
+    }*/
 }

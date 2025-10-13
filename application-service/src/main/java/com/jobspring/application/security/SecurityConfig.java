@@ -1,4 +1,4 @@
-package com.jobspring.job.security;
+package com.jobspring.application.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

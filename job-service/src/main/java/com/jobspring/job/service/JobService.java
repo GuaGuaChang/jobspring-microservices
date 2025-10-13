@@ -39,6 +39,12 @@ public class JobService {
         return jobs.map(this::convertToJobSeekerDTO);
     }
 
+    public JobDTO getJobById(Long id) {
+        Job job = jobRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Job not found"));
+        return convertToJobSeekerDTO(job);
+    }
+
     // 转换方法
     private JobDTO convertToJobSeekerDTO(Job job) {
         JobDTO dto = new JobDTO();
@@ -158,4 +164,100 @@ public class JobService {
         //applicationRepository.updateStatusByJobId(jobId, 4);
     }
 
+/*    // 根据 userId 找到 HR 所属的公司
+    public Long findCompanyIdByUserId(Long userId) {
+        try {
+            var resp = companyMemberClient.getCompanyIdByHr(userId);
+            if (resp == null || resp.getCompanyId() == null) {
+                throw new EntityNotFoundException("HR membership not found");
+            }
+            return resp.getCompanyId();
+        } catch (FeignException.NotFound e) {
+            throw new EntityNotFoundException("HR membership not found");
+        }
+    }
+
+    // HR 查看本公司岗位（包含上下线）
+    public Page<JobResponse> listJobs(Long companyId, Integer status, Pageable pageable) {
+        Page<Job> page = (status == null)
+                ? jobRepository.findByCompanyId(companyId, pageable)
+                : jobRepository.findByCompanyIdAndStatus(companyId, status, pageable);
+        return page.map(this::toResponse);
+    }
+
+    private JobResponse toResponse(Job j) {
+        JobResponse r = new JobResponse();
+        r.setId(j.getId());
+        r.setCompanyId(j.getCompany().getId());
+        r.setTitle(j.getTitle());
+        r.setLocation(j.getLocation());
+        r.setEmploymentType(j.getEmploymentType());
+        r.setSalaryMin(j.getSalaryMin());
+        r.setSalaryMax(j.getSalaryMax());
+        r.setDescription(j.getDescription());
+        r.setStatus(j.getStatus());
+        r.setPostedAt(j.getPostedAt());
+        return r;
+    }*/
+
+    @Transactional
+    public JobResponse createJob(Long companyId, JobCreateRequest req) {
+        Job job = new Job();
+        job.setCompanyId(companyId);
+        job.setTitle(req.getTitle());
+        job.setLocation(req.getLocation());
+        job.setEmploymentType(req.getEmploymentType());
+        job.setSalaryMin(req.getSalaryMin());
+        job.setSalaryMax(req.getSalaryMax());
+        job.setDescription(req.getDescription());
+        job.setStatus(0);
+
+        jobRepository.save(job);
+
+        JobResponse res = new JobResponse();
+        res.setId(job.getId());
+        res.setCompanyId(job.getCompanyId());
+        res.setTitle(job.getTitle());
+        res.setLocation(job.getLocation());
+        res.setEmploymentType(job.getEmploymentType());
+        res.setSalaryMin(job.getSalaryMin());
+        res.setSalaryMax(job.getSalaryMax());
+        res.setDescription(job.getDescription());
+        res.setStatus(job.getStatus());
+        res.setPostedAt(job.getPostedAt());
+        return res;
+    }
+
+    @Transactional
+    public JobResponse updateJob(Long companyId, Long jobId, JobUpdateRequest req) {
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new RuntimeException("Job not found"));
+
+        if (!job.getCompanyId().equals(companyId)) {
+            throw new RuntimeException("Job does not belong to company " + companyId);
+        }
+
+        if (req.getSalaryMin() != null) job.setSalaryMin(req.getSalaryMin());
+        if (req.getSalaryMax() != null) job.setSalaryMax(req.getSalaryMax());
+        if (req.getDescription() != null && !req.getDescription().isBlank())
+            job.setDescription(req.getDescription());
+
+        jobRepository.save(job);
+        return toResponse(job);
+    }
+
+    private JobResponse toResponse(Job job) {
+        JobResponse res = new JobResponse();
+        res.setId(job.getId());
+        res.setCompanyId(job.getCompanyId());
+        res.setTitle(job.getTitle());
+        res.setLocation(job.getLocation());
+        res.setEmploymentType(job.getEmploymentType());
+        res.setSalaryMin(job.getSalaryMin());
+        res.setSalaryMax(job.getSalaryMax());
+        res.setDescription(job.getDescription());
+        res.setStatus(job.getStatus());
+        res.setPostedAt(job.getPostedAt());
+        return res;
+    }
 }

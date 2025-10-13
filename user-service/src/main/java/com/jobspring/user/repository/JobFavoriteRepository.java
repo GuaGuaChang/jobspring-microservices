@@ -11,5 +11,4 @@ public interface JobFavoriteRepository extends JpaRepository<JobFavorite, Long> 
     void deleteByUserIdAndJobId(Long userId, Long jobId);
 
     Page<JobFavorite> findByUserId(Long userId, Pageable pageable);
-
 }
