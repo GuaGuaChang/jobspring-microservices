@@ -94,7 +94,7 @@ public class JobController {
         return ResponseEntity.noContent().build();
     }
 
-/*    // 查看岗位
+    // 查看岗位
     @PreAuthorize("hasRole('HR')")
     @GetMapping("/companies/jobs")
     public ResponseEntity<Page<JobResponse>> list(Pageable pageable,
@@ -103,7 +103,7 @@ public class JobController {
         Long userId = Long.valueOf(auth.getName());
         Long companyId = jobService.findCompanyIdByUserId(userId);
         return ResponseEntity.ok(jobService.listJobs(companyId, status, pageable));
-    }*/
+    }
 
     @GetMapping("/{id}")
     public JobDTO getJobById(@PathVariable Long id) {

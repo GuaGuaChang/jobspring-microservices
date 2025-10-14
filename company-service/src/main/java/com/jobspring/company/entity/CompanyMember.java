@@ -19,7 +19,6 @@ public class CompanyMember {
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
-
     @Column(name = "user_id", nullable = false)
     private Long userId;
 

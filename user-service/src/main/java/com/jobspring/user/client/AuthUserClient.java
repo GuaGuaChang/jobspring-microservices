@@ -36,4 +36,7 @@ public interface AuthUserClient {
 
     record AccountBrief(Long id, String fullName) {
     }
+
+    @GetMapping(value = "/me", consumes = MediaType.APPLICATION_JSON_VALUE)
+    UserView getCurrentUser(@RequestHeader("X-User-Id") String uid);
 }

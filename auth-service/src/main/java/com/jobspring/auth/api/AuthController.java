@@ -2,6 +2,7 @@ package com.jobspring.auth.api;
 
 import com.jobspring.auth.account.Account;
 import com.jobspring.auth.account.AccountRepo;
+import com.jobspring.auth.client.NotificationClient;
 import com.jobspring.auth.dto.*;
 import com.jobspring.auth.service.AuthService;
 import com.jobspring.auth.dto.*;
@@ -38,6 +39,7 @@ public class AuthController {
     private final AccountRepo accounts;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     private final VerificationService verificationService;
+    private final NotificationClient notificationClient;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -104,9 +106,15 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/send-code")
+    /*@PostMapping("/send-code")
     public ResponseEntity<Void> sendCode(@Valid @RequestBody SendCodeRequestDTO req) {
         verificationService.sendRegisterCode(req.getEmail());
+        return ResponseEntity.noContent().build();
+    }*/
+
+    @PostMapping("/send-code")
+    public ResponseEntity<Void> sendCode(@RequestBody SendCodeRequestDTO req) {
+        notificationClient.sendVerificationCode(req);
         return ResponseEntity.noContent().build();
     }
 

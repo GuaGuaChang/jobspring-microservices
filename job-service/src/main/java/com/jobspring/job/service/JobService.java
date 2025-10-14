@@ -5,6 +5,7 @@ import com.jobspring.job.dto.*;
 import com.jobspring.job.entity.Job;
 import com.jobspring.job.repository.JobRepository;
 import com.jobspring.job.repository.SkillRepository;
+import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -164,10 +165,10 @@ public class JobService {
         //applicationRepository.updateStatusByJobId(jobId, 4);
     }
 
-/*    // 根据 userId 找到 HR 所属的公司
+    // 根据 userId 找到 HR 所属的公司
     public Long findCompanyIdByUserId(Long userId) {
         try {
-            var resp = companyMemberClient.getCompanyIdByHr(userId);
+            var resp = companyClient.getCompanyIdByHr(userId);
             if (resp == null || resp.getCompanyId() == null) {
                 throw new EntityNotFoundException("HR membership not found");
             }
@@ -180,25 +181,11 @@ public class JobService {
     // HR 查看本公司岗位（包含上下线）
     public Page<JobResponse> listJobs(Long companyId, Integer status, Pageable pageable) {
         Page<Job> page = (status == null)
-                ? jobRepository.findByCompanyId(companyId, pageable)
+                ? jobRepository.findAllByCompanyId(companyId, pageable)
                 : jobRepository.findByCompanyIdAndStatus(companyId, status, pageable);
         return page.map(this::toResponse);
     }
 
-    private JobResponse toResponse(Job j) {
-        JobResponse r = new JobResponse();
-        r.setId(j.getId());
-        r.setCompanyId(j.getCompany().getId());
-        r.setTitle(j.getTitle());
-        r.setLocation(j.getLocation());
-        r.setEmploymentType(j.getEmploymentType());
-        r.setSalaryMin(j.getSalaryMin());
-        r.setSalaryMax(j.getSalaryMax());
-        r.setDescription(j.getDescription());
-        r.setStatus(j.getStatus());
-        r.setPostedAt(j.getPostedAt());
-        return r;
-    }*/
 
     @Transactional
     public JobResponse createJob(Long companyId, JobCreateRequest req) {

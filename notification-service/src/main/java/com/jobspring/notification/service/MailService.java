@@ -1,4 +1,4 @@
-package com.jobspring.auth.service;
+package com.jobspring.notification.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
