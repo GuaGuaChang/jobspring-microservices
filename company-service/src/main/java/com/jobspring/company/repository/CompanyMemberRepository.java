@@ -18,6 +18,6 @@ public interface CompanyMemberRepository extends JpaRepository<CompanyMember, Lo
             "where cm.userId = :userId and cm.role = 'HR'")
     Optional<Long> findCompanyIdByHrUserId(Long userId);
 
-    boolean existsByUserIdAndCompany_IdAndRole(Long userId, Long companyId, String role);
+    boolean existsByUserIdAndCompanyIdAndRole(Long userId, Long companyId, String role);
 
 }

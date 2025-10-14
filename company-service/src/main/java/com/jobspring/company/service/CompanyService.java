@@ -84,7 +84,7 @@ public class CompanyService {
         if (!companyRepository.existsById(companyId)) {
             throw new EntityNotFoundException("Company not found");
         }
-        boolean ok = companyMemberRepository.existsByUserIdAndCompany_IdAndRole(hrUserId, companyId, "HR");
+        boolean ok = companyMemberRepository.existsByUserIdAndCompanyIdAndRole(hrUserId, companyId, "HR");
         if (!ok) {
             throw new AccessDeniedException("HR not in this company");
         }
