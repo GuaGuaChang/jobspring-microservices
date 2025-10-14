@@ -1,12 +1,15 @@
 package com.jobspring.user.service;
 
+import com.jobspring.user.client.JobClient;
 import com.jobspring.user.dto.*;
 import com.jobspring.user.entity.Profile;
 import com.jobspring.user.entity.ProfileEducation;
 import com.jobspring.user.entity.ProfileExperience;
+import com.jobspring.user.entity.UserSkill;
 import com.jobspring.user.repository.ProfileEducationRepository;
 import com.jobspring.user.repository.ProfileExperienceRepository;
 import com.jobspring.user.repository.ProfileRepository;
+import com.jobspring.user.repository.UserSkillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,8 +18,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ProfileService {
@@ -27,6 +32,10 @@ public class ProfileService {
     private ProfileEducationRepository educationRepository;
     @Autowired
     private ProfileExperienceRepository experienceRepository;
+    @Autowired
+    private UserSkillRepository userSkillRepository;
+    @Autowired
+    private JobClient jobClient;
 
     public ProfileResponseDTO getCompleteProfile(Long userId) {
         Profile profile = profileRepository.findByUserId(userId)
@@ -34,6 +43,16 @@ public class ProfileService {
 
         List<ProfileEducation> educations = educationRepository.findByProfileId(profile.getId());
         List<ProfileExperience> experiences = experienceRepository.findByProfileId(profile.getId());
+        List<UserSkill> userSkills = userSkillRepository.findByUserId(userId);
+
+        List<SkillDTO> allSkills;
+        try {
+            allSkills = jobClient.getAllSkills();
+        } catch (Exception e) {
+            allSkills = List.of();
+        }
+        Map<Long, SkillDTO> skillMap = allSkills.stream()
+                .collect(Collectors.toMap(SkillDTO::getId, s -> s));
 
         ProfileResponseDTO resp = new ProfileResponseDTO();
         ProfileDTO p = new ProfileDTO();
@@ -41,9 +60,25 @@ public class ProfileService {
         p.setVisibility(profile.getVisibility());
         p.setFileUrl(profile.getFileUrl());
         resp.setProfile(p);
+
         resp.setEducation(educations.stream().map(this::toEdu).toList());
         resp.setExperience(experiences.stream().map(this::toExp).toList());
-        resp.setSkills(Collections.emptyList()); // 预留 user_skills
+        List<UserSkillDTO> skillDTOs = userSkills.stream().map(us -> {
+            UserSkillDTO dto = new UserSkillDTO();
+            dto.setSkillId(us.getSkillId());
+            dto.setLevel(us.getLevel());
+            dto.setYears(us.getYears() != null ? us.getYears().doubleValue() : null);
+            SkillDTO s = skillMap.get(us.getSkillId());
+            if (s != null) {
+                dto.setSkillName(s.getName());
+                dto.setCategory(s.getCategory());
+            } else {
+                dto.setSkillName("(unknown)");
+            }
+            return dto;
+        }).toList();
+        resp.setSkills(skillDTOs);
+
         return resp;
     }
 
@@ -71,7 +106,39 @@ public class ProfileService {
             for (ExperienceDTO ex : request.getExperience())
                 saveExperience(profile.getId(), ex);
 
+        if (request.getSkills() != null) {
+            handleSkills(userId, request.getSkills());
+        }
+
         return new ProfileUpdateResponseDTO("success", "Profile updated successfully", profile.getId());
+    }
+
+    private void handleSkills(Long userId, List<UserSkillDTO> skillDTOs) {
+        userSkillRepository.deleteByUserId(userId);
+        if (skillDTOs.isEmpty()) return;
+
+        // 获取 job-service 的技能
+        List<SkillDTO> allSkills = jobClient.getAllSkills();
+        Set<Long> validIds = allSkills.stream().map(SkillDTO::getId).collect(Collectors.toSet());
+
+        List<Long> invalidIds = skillDTOs.stream()
+                .map(UserSkillDTO::getSkillId)
+                .filter(id -> !validIds.contains(id))
+                .toList();
+        if (!invalidIds.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid skillId(s): " + invalidIds);
+        }
+
+        List<UserSkill> list = skillDTOs.stream().map(dto -> {
+            UserSkill us = new UserSkill();
+            us.setUserId(userId);
+            us.setSkillId(dto.getSkillId());
+            us.setLevel(dto.getLevel());
+            us.setYears(dto.getYears() != null ? BigDecimal.valueOf(dto.getYears()) : BigDecimal.ZERO);
+            return us;
+        }).toList();
+
+        userSkillRepository.saveAll(list);
     }
 
     private void saveEducation(Long profileId, EducationDTO dto) {

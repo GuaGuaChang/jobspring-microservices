@@ -6,10 +6,8 @@ import lombok.Data;
 
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class UserSkillDTO {
-    private Long skillId;
-    private String skillName;
+public class SkillDTO {
+    private Long id;
+    private String name;
     private String category;
-    private Integer level;
-    private Double years;
 }
