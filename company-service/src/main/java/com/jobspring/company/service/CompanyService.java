@@ -3,7 +3,10 @@ package com.jobspring.company.service;
 import com.jobspring.company.dto.CompanyDTO;
 import com.jobspring.company.entity.Company;
 import com.jobspring.company.exception.BizException;
+import com.jobspring.company.repository.CompanyMemberRepository;
 import com.jobspring.company.repository.CompanyRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.jobspring.company.exception.ErrorCode;
 import org.springframework.data.domain.Page;
@@ -11,14 +14,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CompanyService {
 
-    @Autowired
-    private CompanyRepository companyRepository;
+
+    private final CompanyRepository companyRepository;
+
+    private final CompanyMemberRepository companyMemberRepository;
 
 //    @Autowired
 //    private JobRepository jobRepository;
-
 
     public CompanyDTO getCompanyById(Long id) {
         Company company = companyRepository.findById(id)
@@ -71,6 +76,11 @@ public class CompanyService {
         result.setCreatedBy(saved.getCreatedBy());
 
         return result;
+    }
+
+    public Long getCompanyIdForHr(Long userId) {
+        return companyMemberRepository.findCompanyIdByHrUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("HR membership not found"));
     }
 }
 

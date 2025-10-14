@@ -8,6 +8,29 @@ spring:
     nacos:
       discovery:
         server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: 1649182810@qq.com
+    password: tpywidoemlinfagh
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:
+      timeout: 2000ms
+
+app:
+  mail:
+    from: 1649182810@qq.com
+
 management:
   tracing:
     sampling:
