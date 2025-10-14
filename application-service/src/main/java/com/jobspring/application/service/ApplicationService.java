@@ -1,4 +1,74 @@
 package com.jobspring.application.service;
 
+import com.jobspring.application.client.CompanyClient;
+import com.jobspring.application.client.JobClient;
+import com.jobspring.application.client.UserClient;
+import com.jobspring.application.dto.ApplicationBriefResponse;
+import com.jobspring.application.entity.Application;
+import com.jobspring.application.repository.ApplicationRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+
+@Service
+@RequiredArgsConstructor
 public class ApplicationService {
+
+    private final CompanyClient companyClient;
+    private final ApplicationRepository applicationRepository;
+    private final UserClient userClient;
+    private final JobClient jobClient;
+
+    public Page<ApplicationBriefResponse> listCompanyApplications(
+            Long hrUserId,
+            Long companyId,
+            Long jobId,
+            Integer status,
+            Pageable pageable
+    ) {
+        final Long effectiveCompanyId = (companyId == null)
+                ? companyClient.findCompanyIdByHr(hrUserId)
+                : validateAndReturn(hrUserId, companyId);
+
+
+        Page<Application> page = applicationRepository.searchByCompany(effectiveCompanyId, jobId, status, pageable);
+        List<Long> jobIds = page.stream().map(Application::getJobId).distinct().toList();
+        List<Long> userIds = page.stream().map(Application::getUserId).distinct().toList();
+        Map<Long, JobClient.JobBrief> jobMap = jobClient.batchBrief(jobIds).stream()
+                .collect(Collectors.toMap(JobClient.JobBrief::id, x -> x));
+        Map<Long, UserClient.UserBrief> userMap = userClient.batchBrief(userIds).stream()
+                .collect(Collectors.toMap(UserClient.UserBrief::id, x -> x));
+        return page.map(a -> toBrief(a, jobMap, userMap));
+    }
+
+    private Long validateAndReturn(Long hrUserId, Long companyId) {
+        companyClient.assertHrInCompany(hrUserId, companyId);
+        return companyId;
+    }
+
+    private ApplicationBriefResponse toBrief(
+            Application a,
+            Map<Long, JobClient.JobBrief> jobMap,
+            Map<Long, UserClient.UserBrief> userMap) {
+
+        JobClient.JobBrief jb = jobMap.get(a.getJobId());
+        UserClient.UserBrief ub = userMap.get(a.getUserId());
+
+        ApplicationBriefResponse r = new ApplicationBriefResponse();
+        r.setId(a.getId());
+        r.setJobId(a.getJobId());
+        r.setJobTitle(jb != null ? jb.title() : "(unknown)");
+        r.setApplicantId(a.getUserId());
+        r.setApplicantName(ub != null ? ub.fullName() : "(unknown)");
+        r.setStatus(a.getStatus());
+        r.setAppliedAt(a.getAppliedAt());
+        r.setResumeUrl(a.getResumeUrl());
+        return r;
+    }
 }

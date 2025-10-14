@@ -260,4 +260,25 @@ public class JobService {
         res.setPostedAt(job.getPostedAt());
         return res;
     }
+    public JobBrief getBrief(Long jobId) {
+        Job j = jobRepository.findById(jobId)
+                .orElseThrow(() -> new EntityNotFoundException("Job not found"));
+        return new JobBrief(j.getId(), j.getTitle(), j.getCompanyId());
+    }
+
+    public Long getCompanyId(Long jobId) {
+        return jobRepository.findCompanyIdById(jobId)
+                .orElseThrow(() -> new EntityNotFoundException("Job not found"));
+    }
+
+    public List<Long> listIdsByCompany(Long companyId) {
+        return jobRepository.findIdsByCompanyId(companyId);
+    }
+
+    public List<JobBrief> batchBrief(List<Long> jobIds) {
+        if (jobIds == null || jobIds.isEmpty()) return List.of();
+        return jobRepository.findAllById(jobIds).stream()
+                .map(j -> new JobBrief(j.getId(), j.getTitle(), j.getCompanyId()))
+                .toList();
+    }
 }

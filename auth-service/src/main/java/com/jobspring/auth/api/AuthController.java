@@ -138,4 +138,8 @@ public class AuthController {
         Page<UserDTO> p = authService.searchUsers(q, pageable);
         return PageResponse.from(p);
     }
+    @PostMapping("/briefs:batch")
+    public List<AccountBrief> batchBrief(@RequestBody List<Long> userIds) {
+        return authService.batchBrief(userIds);
+    }
 }

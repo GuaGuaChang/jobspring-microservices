@@ -130,4 +130,23 @@ public class JobController {
         JobResponse res = jobService.updateJob(companyId, jobId, req);
         return ResponseEntity.ok(res);
     }
+
+    @GetMapping("/{jobId}/brief")
+    public JobBrief getBrief(@PathVariable Long jobId) {
+        return jobService.getBrief(jobId);
+    }
+
+    @GetMapping("/{jobId}/company-id")
+    public Long getCompanyId(@PathVariable Long jobId) {
+        return jobService.getCompanyId(jobId);
+    }
+
+    @GetMapping("/by-company/{companyId}/ids")
+    public List<Long> listIdsByCompany(@PathVariable Long companyId) {
+        return jobService.listIdsByCompany(companyId);
+    }
+    @PostMapping("/briefs:batch")
+    public List<JobBrief> batchBrief(@RequestBody List<Long> jobIds) {
+        return jobService.batchBrief(jobIds);
+    }
 }

@@ -1,13 +1,8 @@
 package com.jobspring.user.controller;
 
 import com.jobspring.user.client.JobClient;
-import com.jobspring.user.dto.JobCreateRequest;
-import com.jobspring.user.dto.JobResponse;
-import com.jobspring.user.dto.JobUpdateRequest;
+import com.jobspring.user.dto.*;
 import com.jobspring.user.client.AuthUserClient;
-import com.jobspring.user.dto.PageResponse;
-import com.jobspring.user.dto.PromoteToHrRequest;
-import com.jobspring.user.dto.UserDTO;
 import com.jobspring.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -79,6 +74,10 @@ public class UserController {
             @RequestBody JobUpdateRequest req) {
         JobResponse res = jobClient.updateJob(companyId, jobId, req);
         return ResponseEntity.ok(res);
+    }
+    @PostMapping("/briefs:batch")
+    public List<UserBrief> batchBrief(@RequestBody List<Long> userIds) {
+        return userService.batchBrief(userIds);
     }
 
 }

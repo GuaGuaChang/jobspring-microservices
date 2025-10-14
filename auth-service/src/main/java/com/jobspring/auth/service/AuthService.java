@@ -3,6 +3,7 @@ package com.jobspring.auth.service;
 import com.jobspring.auth.account.Account;
 import com.jobspring.auth.account.AccountRepo;
 import com.jobspring.auth.client.CompanyClient;
+import com.jobspring.auth.dto.AccountBrief;
 import com.jobspring.auth.dto.PromoteToHrRequest;
 import com.jobspring.auth.dto.UserDTO;
 import com.jobspring.auth.repository.spec.UserSpecs;
@@ -85,5 +86,12 @@ public class AuthService {
         dto.setRole(user.getRole());
         dto.setIsActive(user.getActive());
         return dto;
+    }
+
+    public List<AccountBrief> batchBrief(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) return List.of();
+        return accountRepository.findAllById(ids).stream()
+                .map(a -> new AccountBrief(a.getId(), a.getFullName()))
+                .toList();
     }
 }

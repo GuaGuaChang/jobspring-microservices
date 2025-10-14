@@ -3,21 +3,23 @@ package com.jobspring.company.service;
 import com.jobspring.company.dto.CompanyDTO;
 import com.jobspring.company.entity.Company;
 import com.jobspring.company.exception.BizException;
+import com.jobspring.company.repository.CompanyMemberRepository;
 import com.jobspring.company.repository.CompanyRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.jobspring.company.exception.ErrorCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CompanyService {
 
-    @Autowired
-    private CompanyRepository companyRepository;
-
-//    @Autowired
-//    private JobRepository jobRepository;
+    private final CompanyRepository companyRepository;
+    private final CompanyMemberRepository companyMemberRepository;
 
 
     public CompanyDTO getCompanyById(Long id) {
@@ -71,6 +73,21 @@ public class CompanyService {
         result.setCreatedBy(saved.getCreatedBy());
 
         return result;
+    }
+
+    public Long findCompanyIdByHr(Long hrUserId) {
+        return companyMemberRepository.findCompanyIdByHrUserId(hrUserId)
+                .orElseThrow(() -> new EntityNotFoundException("HR not bound to any company"));
+    }
+
+    public void assertHrInCompany(Long hrUserId, Long companyId) {
+        if (!companyRepository.existsById(companyId)) {
+            throw new EntityNotFoundException("Company not found");
+        }
+        boolean ok = companyMemberRepository.existsByUserIdAndCompany_IdAndRole(hrUserId, companyId, "HR");
+        if (!ok) {
+            throw new AccessDeniedException("HR not in this company");
+        }
     }
 }
 

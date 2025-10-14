@@ -29,4 +29,11 @@ public interface AuthUserClient {
             @RequestParam("size") int size,
             @RequestParam(value = "sort", required = false) List<String> sort
     );
+
+    @PostMapping("/briefs:batch")
+    List<AccountBrief> batchAccountBriefs(@RequestBody List<Long> userIds);
+
+
+    record AccountBrief(Long id, String fullName) {
+    }
 }
