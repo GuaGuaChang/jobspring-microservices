@@ -13,6 +13,22 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
+      httpclient:
+        connect-timeout: 1000
+        response-timeout: 1s
+      default-filters:
+        - name: Retry
+          args:
+            retries: 1
+            methods: GET
+            backoff:
+              firstBackoff: 100ms
+              maxBackoff: 500ms
+              factor: 2
+        - name: CircuitBreaker
+          args:
+            name: gwDefault
+            fallbackUri: forward:/__gw_fallback
 
       globalcors:
         add-to-simple-url-handler-mapping: true
@@ -70,5 +86,17 @@ management:
   zipkin:
     tracing:
       endpoint: ${ZIPKIN_ENDPOINT:http://127.0.0.1:9411/api/v2/spans}
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
-management.endpoints.web.exposure.include: ""
+resilience4j:
+  circuitbreaker:
+    instances:
+      gwDefault:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 20
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3
