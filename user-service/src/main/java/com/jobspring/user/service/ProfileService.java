@@ -117,7 +117,6 @@ public class ProfileService {
         userSkillRepository.deleteByUserId(userId);
         if (skillDTOs.isEmpty()) return;
 
-        // 获取 job-service 的技能
         List<SkillDTO> allSkills = jobClient.getAllSkills();
         Set<Long> validIds = allSkills.stream().map(SkillDTO::getId).collect(Collectors.toSet());
 
