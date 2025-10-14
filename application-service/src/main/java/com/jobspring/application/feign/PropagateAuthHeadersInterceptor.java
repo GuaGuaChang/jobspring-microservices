@@ -26,7 +26,6 @@ public class PropagateAuthHeadersInterceptor implements RequestInterceptor {
 
         copy(req, template, "X-XSRF-TOKEN");
         copy(req, template, HttpHeaders.COOKIE);
-        System.out.println("Propagating header X-User-Id=" + req.getHeader("X-User-Id"));
     }
 
     private static void copy(HttpServletRequest req, RequestTemplate t, String name) {

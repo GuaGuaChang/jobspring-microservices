@@ -36,4 +36,10 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
     Page<Job> findByCompanyIdAndStatus(Long companyId, Integer status, Pageable pageable);
 
     List<Job> findByCompanyId(Long companyId);
+
+    @Query("select j.companyId from Job j where j.id = :jobId")
+    Optional<Long> findCompanyIdById(@Param("jobId") Long jobId);
+
+    @Query("select j.id from Job j where j.companyId = :companyId")
+    List<Long> findIdsByCompanyId(@Param("companyId") Long companyId);
 }

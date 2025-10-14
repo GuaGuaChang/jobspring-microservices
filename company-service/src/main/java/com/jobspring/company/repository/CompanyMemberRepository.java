@@ -11,10 +11,13 @@ import java.util.Optional;
 @Repository
 public interface CompanyMemberRepository extends JpaRepository<CompanyMember, Long> {
 
-    @Query("""
-         select cm.company.id
-         from CompanyMember cm
-         where cm.userId = :userId and cm.role = 'HR'
-         """)
-    Optional<Long> findCompanyIdByHrUserId(@Param("userId") Long userId);
+    Optional<CompanyMember> findFirstByUserIdAndRole(Long userId, String role);
+
+
+    @Query("select cm.company.id from CompanyMember cm " +
+            "where cm.userId = :userId and cm.role = 'HR'")
+    Optional<Long> findCompanyIdByHrUserId(Long userId);
+
+    boolean existsByUserIdAndCompanyIdAndRole(Long userId, Long companyId, String role);
+
 }
