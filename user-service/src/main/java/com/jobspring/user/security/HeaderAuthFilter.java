@@ -30,7 +30,7 @@ public class HeaderAuthFilter extends OncePerRequestFilter {
 
         String uid = req.getHeader("X-User-Id");
         String role = req.getHeader("X-User-Role");
-
+        System.out.println(">>> [user-service] HeaderAuthFilter called, X-User-Id=" + uid + ", X-User-Role=" + role);
         if (uid != null && role != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             var authority = new SimpleGrantedAuthority("ROLE_" + toRoleName(role));
             var auth = new UsernamePasswordAuthenticationToken(uid, null, List.of(authority));

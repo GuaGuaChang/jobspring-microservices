@@ -1,10 +1,8 @@
 package com.jobspring.user.api;
 
 import com.jobspring.user.client.AuthUserClient;
-import com.jobspring.user.dto.ProfileRequestDTO;
-import com.jobspring.user.dto.ProfileResponseDTO;
-import com.jobspring.user.dto.ProfileUpdateResponseDTO;
-import com.jobspring.user.dto.UserView;
+import com.jobspring.user.dto.*;
+import com.jobspring.user.entity.Profile;
 import com.jobspring.user.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
