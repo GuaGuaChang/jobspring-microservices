@@ -188,4 +188,17 @@ public class ProfileService {
         dto.setAchievements(e.getAchievements());
         return dto;
     }
+
+    public Profile getProfileById(Long id) {
+        return profileRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
+    }
+
+    public ProfileDTO toDTO(Profile profile) {
+        ProfileDTO dto = new ProfileDTO();
+        dto.setSummary(profile.getSummary());
+        dto.setVisibility(profile.getVisibility());
+        dto.setFileUrl(profile.getFileUrl());
+        return dto;
+    }
 }
