@@ -1,11 +1,10 @@
 package com.jobspring.user.client;
 
-import com.jobspring.user.dto.JobCreateRequest;
-import com.jobspring.user.dto.JobResponse;
-import com.jobspring.user.dto.JobSummaryResponse;
-import com.jobspring.user.dto.JobUpdateRequest;
+import com.jobspring.user.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @FeignClient(name = "job-service")
 public interface JobClient {
@@ -25,4 +24,7 @@ public interface JobClient {
             @PathVariable("companyId") Long companyId,
             @PathVariable("jobId") Long jobId,
             @RequestBody JobUpdateRequest req);
+
+    @GetMapping("/skills")
+    List<SkillDTO> getAllSkills();
 }
