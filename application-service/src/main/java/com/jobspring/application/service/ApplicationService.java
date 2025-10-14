@@ -4,12 +4,14 @@ import com.jobspring.application.client.CompanyClient;
 import com.jobspring.application.client.JobClient;
 import com.jobspring.application.client.UserClient;
 import com.jobspring.application.dto.ApplicationBriefResponse;
+import com.jobspring.application.dto.JobDTO;
 import com.jobspring.application.entity.Application;
 import com.jobspring.application.repository.ApplicationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -70,5 +72,32 @@ public class ApplicationService {
         r.setAppliedAt(a.getAppliedAt());
         r.setResumeUrl(a.getResumeUrl());
         return r;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ApplicationBriefResponse> listMine(Long userId, Integer status, Pageable pageable) {
+        Page<Application> page = (status == null)
+                ? applicationRepository.findMyApplications(userId, pageable)
+                : applicationRepository.findMyApplicationsByStatus(userId, status, pageable);
+
+        return page.map(this::toBrief);
+    }
+
+    private ApplicationBriefResponse toBrief(Application a) {
+        ApplicationBriefResponse dto = new ApplicationBriefResponse();
+        dto.setId(a.getId());
+        dto.setStatus(a.getStatus());
+        dto.setAppliedAt(a.getAppliedAt());
+        dto.setResumeUrl(a.getResumeUrl());
+        dto.setApplicantId(a.getUserId());
+
+        JobDTO job = jobClient.getJobById(a.getJobId());
+        if (job != null) {
+            dto.setJobId(job.getId());
+            dto.setJobTitle(job.getTitle());
+            dto.setCompanyId(job.getId());
+            dto.setCompanyName(job.getCompany());
+        }
+        return dto;
     }
 }
