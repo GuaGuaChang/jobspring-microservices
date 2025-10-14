@@ -5,6 +5,7 @@ import com.jobspring.company.dto.CompanyFavouriteResponse;
 import com.jobspring.company.dto.CompanyResponse;
 import com.jobspring.company.entity.Company;
 import com.jobspring.company.repository.CompanyRepository;
+import com.jobspring.company.service.CompanyService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,8 @@ import java.util.stream.Collectors;
 public class CompanyController {
 
     private final CompanyRepository companyRepository;
+
+    private final CompanyService companyService;
 
 /*    private final CompanyMemberService companyMemberService;*/
 
@@ -66,10 +69,11 @@ public class CompanyController {
                 .collect(Collectors.toMap(Company::getId,
                         c -> new CompanyDTO(c.getId(), c.getName())));
     }
-/*
+
+    // 提供给 job-service 调用的接口
     @GetMapping("/hr/{userId}/company-id")
     public Map<String, Long> getCompanyIdByHr(@PathVariable Long userId) {
-        Long companyId = companyMemberService.getCompanyIdForHr(userId);
+        Long companyId = companyService.getCompanyIdForHr(userId);
         return Map.of("companyId", companyId);
-    }*/
+    }
 }
