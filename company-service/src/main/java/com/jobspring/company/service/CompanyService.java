@@ -11,19 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jobspring.company.exception.ErrorCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class CompanyService {
 
-
     private final CompanyRepository companyRepository;
-
     private final CompanyMemberRepository companyMemberRepository;
 
-//    @Autowired
-//    private JobRepository jobRepository;
 
     public CompanyDTO getCompanyById(Long id) {
         Company company = companyRepository.findById(id)
@@ -76,6 +73,21 @@ public class CompanyService {
         result.setCreatedBy(saved.getCreatedBy());
 
         return result;
+    }
+
+    public Long findCompanyIdByHr(Long hrUserId) {
+        return companyMemberRepository.findCompanyIdByHrUserId(hrUserId)
+                .orElseThrow(() -> new EntityNotFoundException("HR not bound to any company"));
+    }
+
+    public void assertHrInCompany(Long hrUserId, Long companyId) {
+        if (!companyRepository.existsById(companyId)) {
+            throw new EntityNotFoundException("Company not found");
+        }
+        boolean ok = companyMemberRepository.existsByUserIdAndCompanyIdAndRole(hrUserId, companyId, "HR");
+        if (!ok) {
+            throw new AccessDeniedException("HR not in this company");
+        }
     }
 
     public Long getCompanyIdForHr(Long userId) {

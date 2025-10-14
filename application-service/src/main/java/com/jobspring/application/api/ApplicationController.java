@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ApplicationController {
 
-    private final ApplicationService service;
+    private final ApplicationService applicationService;
 
     @GetMapping("/getApplications")
     @PreAuthorize("hasRole('CANDIDATE')")
@@ -26,6 +27,18 @@ public class ApplicationController {
             Authentication auth) {
 
         Long userId = Long.valueOf(auth.getName());
-        return ResponseEntity.ok(service.listMine(userId, status, pageable));
+        return ResponseEntity.ok(applicationService.listMine(userId, status, pageable));
+    }
+
+    @GetMapping("/applications")
+    public ResponseEntity<Page<ApplicationBriefResponse>> listMine(
+            @RequestParam(required = false) Long jobId,
+            @RequestParam(required = false) Integer status,
+            Pageable pageable,
+            @RequestHeader("X-User-Id") Long hrUserId
+    ) {
+        Page<ApplicationBriefResponse> page = applicationService
+                .listCompanyApplications(hrUserId, null, jobId, status, pageable);
+        return ResponseEntity.ok(page);
     }
 }

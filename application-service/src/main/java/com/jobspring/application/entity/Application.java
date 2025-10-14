@@ -26,6 +26,9 @@ public class Application {
     @Column(nullable = false)
     private Integer status = 0;
 
+    @Column(name = "company_id", nullable = false)
+    private Long companyId;
+
     private LocalDateTime appliedAt;
 
     @Column(columnDefinition = "TEXT")

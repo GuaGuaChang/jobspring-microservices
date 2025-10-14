@@ -144,6 +144,11 @@ public class AuthController {
         return PageResponse.from(p);
     }
 
+    @PostMapping("/briefs:batch")
+    public List<AccountBrief> batchBrief(@RequestBody List<Long> userIds) {
+        return authService.batchBrief(userIds);
+    }
+
     @GetMapping("/accounts/{userId}")
     public UserDTO getAccountById(@PathVariable Long userId) {
         var account = accounts.findById(userId)
