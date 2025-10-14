@@ -1,0 +1,30 @@
+CREATE TABLE IF NOT EXISTS applications
+(
+    id
+    BIGINT
+    PRIMARY
+    KEY
+    AUTO_INCREMENT,
+    user_id
+    BIGINT
+    NOT
+    NULL,
+    job_id
+    BIGINT
+    NOT
+    NULL,
+    profile_id
+    BIGINT
+    NOT
+    NULL,
+    status
+    INT
+    DEFAULT
+    0,
+    applied_at
+    DATETIME,
+    resume_profile
+    TEXT,
+    resume_url
+    LONGTEXT
+);
