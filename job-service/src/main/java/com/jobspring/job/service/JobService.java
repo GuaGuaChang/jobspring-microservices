@@ -186,7 +186,6 @@ public class JobService {
         return page.map(this::toResponse);
     }
 
-
     @Transactional
     public JobResponse createJob(Long companyId, JobCreateRequest req) {
         Job job = new Job();
