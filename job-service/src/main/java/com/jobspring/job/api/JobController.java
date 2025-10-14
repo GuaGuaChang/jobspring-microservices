@@ -145,6 +145,7 @@ public class JobController {
     public List<Long> listIdsByCompany(@PathVariable Long companyId) {
         return jobService.listIdsByCompany(companyId);
     }
+
     @PostMapping("/briefs:batch")
     public List<JobBrief> batchBrief(@RequestBody List<Long> jobIds) {
         return jobService.batchBrief(jobIds);

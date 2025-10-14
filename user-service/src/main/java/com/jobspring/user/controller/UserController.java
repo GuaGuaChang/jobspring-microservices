@@ -75,6 +75,7 @@ public class UserController {
         JobResponse res = jobClient.updateJob(companyId, jobId, req);
         return ResponseEntity.ok(res);
     }
+
     @PostMapping("/briefs:batch")
     public List<UserBrief> batchBrief(@RequestBody List<Long> userIds) {
         return userService.batchBrief(userIds);

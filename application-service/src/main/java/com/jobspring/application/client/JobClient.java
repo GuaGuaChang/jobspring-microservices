@@ -20,6 +20,7 @@ public interface JobClient {
     @PostMapping("/briefs:batch")
     List<JobBrief> batchBrief(@RequestBody List<Long> jobIds);
 
-    record JobBrief(Long id, String title, Long companyId) {}
+    record JobBrief(Long id, String title, Long companyId) {
+    }
 }
 

@@ -247,6 +247,7 @@ public class JobService {
         res.setPostedAt(job.getPostedAt());
         return res;
     }
+
     public JobBrief getBrief(Long jobId) {
         Job j = jobRepository.findById(jobId)
                 .orElseThrow(() -> new EntityNotFoundException("Job not found"));
