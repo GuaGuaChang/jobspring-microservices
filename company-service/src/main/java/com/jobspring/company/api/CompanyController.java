@@ -23,7 +23,7 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
-/*    private final CompanyMemberService companyMemberService;*/
+    /*    private final CompanyMemberService companyMemberService;*/
 
     // 提供给 job-service 调用的接口
     @GetMapping("/{id}")
@@ -75,5 +75,12 @@ public class CompanyController {
     public Map<String, Long> getCompanyIdByHr(@PathVariable Long userId) {
         Long companyId = companyService.getCompanyIdForHr(userId);
         return Map.of("companyId", companyId);
+    }
+
+    @GetMapping("/{companyId}/name")
+    public ResponseEntity<String> getCompanyName(@PathVariable Long companyId) {
+        return companyRepository.findById(companyId)
+                .map(c -> ResponseEntity.ok(c.getName()))
+                .orElse(ResponseEntity.notFound().build());
     }
 }

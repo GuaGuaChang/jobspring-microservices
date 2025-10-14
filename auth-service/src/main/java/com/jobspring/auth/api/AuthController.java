@@ -5,13 +5,10 @@ import com.jobspring.auth.account.AccountRepo;
 import com.jobspring.auth.client.NotificationClient;
 import com.jobspring.auth.dto.*;
 import com.jobspring.auth.service.AuthService;
-import com.jobspring.auth.dto.*;
 import com.jobspring.auth.service.VerificationService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -145,5 +142,20 @@ public class AuthController {
 
         Page<UserDTO> p = authService.searchUsers(q, pageable);
         return PageResponse.from(p);
+    }
+
+    @GetMapping("/accounts/{userId}")
+    public UserDTO getAccountById(@PathVariable Long userId) {
+        var account = accounts.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        UserDTO dto = new UserDTO();
+        dto.setId(account.getId());
+        dto.setEmail(account.getEmail());
+        dto.setFullName(account.getFullName());
+        dto.setRole(account.getRole());
+        dto.setIsActive(account.getActive());
+        dto.setCompanyId(account.getCompanyId());
+        return dto;
     }
 }
