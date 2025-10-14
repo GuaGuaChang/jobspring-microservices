@@ -89,5 +89,10 @@ public class CompanyService {
             throw new AccessDeniedException("HR not in this company");
         }
     }
+
+    public Long getCompanyIdForHr(Long userId) {
+        return companyMemberRepository.findCompanyIdByHrUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("HR membership not found"));
+    }
 }
 

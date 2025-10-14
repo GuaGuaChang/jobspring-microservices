@@ -27,5 +27,6 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
                               @Param("phone") String phone,
                               @Param("id") Long id,
                               Pageable pageable);
+
     Page<Account> findAll(Specification<Account> userSpecification, Pageable pageable);
 }
