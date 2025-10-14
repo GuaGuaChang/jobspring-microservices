@@ -1,6 +1,9 @@
 package com.jobspring.company.service;
 
+import com.jobspring.company.client.JobClient;
 import com.jobspring.company.dto.CompanyDTO;
+import com.jobspring.company.dto.JobResponse;
+import com.jobspring.company.dto.PageResponse;
 import com.jobspring.company.entity.Company;
 import com.jobspring.company.exception.BizException;
 import com.jobspring.company.repository.CompanyMemberRepository;
@@ -21,6 +24,7 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final CompanyMemberRepository companyMemberRepository;
 
+    private final JobClient jobClient;
 
     public CompanyDTO getCompanyById(Long id) {
         Company company = companyRepository.findById(id)
@@ -93,6 +97,10 @@ public class CompanyService {
     public Long getCompanyIdForHr(Long userId) {
         return companyMemberRepository.findCompanyIdByHrUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException("HR membership not found"));
+    }
+
+    public PageResponse<JobResponse> listCompanyJobs(Long companyId, Integer status, int page, int size) {
+        return jobClient.getCompanyJobs(companyId, status, page, size);
     }
 }
 

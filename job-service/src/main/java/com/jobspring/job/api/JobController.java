@@ -105,6 +105,17 @@ public class JobController {
         return ResponseEntity.ok(jobService.listJobs(companyId, status, pageable));
     }
 
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @GetMapping("/company/{companyId}")
+    public ResponseEntity<Page<JobResponse>> getJobsByCompany(
+            @PathVariable Long companyId,
+            @RequestParam(required = false, defaultValue = "0") Integer status,
+            Pageable pageable
+    ) {
+        Page<JobResponse> jobs = jobService.listJobs(companyId, status, pageable);
+        return ResponseEntity.ok(jobs);
+    }
+
     @GetMapping("/{id}")
     public JobDTO getJobById(@PathVariable Long id) {
         return jobService.getJobById(id);
