@@ -76,4 +76,11 @@ public class CompanyController {
         Long companyId = companyService.getCompanyIdForHr(userId);
         return Map.of("companyId", companyId);
     }
+
+    @GetMapping("/{companyId}/name")
+    public ResponseEntity<String> getCompanyName(@PathVariable Long companyId) {
+        return companyRepository.findById(companyId)
+                .map(c -> ResponseEntity.ok(c.getName()))
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
