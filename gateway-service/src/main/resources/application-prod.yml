@@ -64,6 +64,11 @@ resilience4j:
         failure-rate-threshold: 50
         wait-duration-in-open-state: 10s
         permitted-number-of-calls-in-half-open-state: 3
+  timelimiter:
+    instances:
+      gwDefault:
+        timeout-duration: 10s
+        cancel-running-future: true
 
 jwt:
   secret: ${JWT_SECRET:}
