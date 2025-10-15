@@ -2,7 +2,6 @@ package com.jobspring.user.api;
 
 import com.jobspring.user.client.AuthUserClient;
 import com.jobspring.user.dto.*;
-import com.jobspring.user.entity.Profile;
 import com.jobspring.user.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
