@@ -1,10 +1,10 @@
 package com.jobspring.job.api;
 
+import com.jobspring.job.client.CompanyClient;
 import com.jobspring.job.dto.*;
 import com.jobspring.job.client.AuthClient;
 import com.jobspring.job.dto.JobResponse;
 import com.jobspring.job.dto.JobSummaryResponse;
-import com.jobspring.job.entity.Job;
 import com.jobspring.job.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,16 +12,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -160,5 +157,14 @@ public class JobController {
     @PostMapping("/briefs:batch")
     public List<JobBrief> batchBrief(@RequestBody List<Long> jobIds) {
         return jobService.batchBrief(jobIds);
+    }
+
+    @GetMapping("/{jobId}/for-edit")
+    public ResponseEntity<JobResponse> getJobForEdit(
+            @RequestParam Long companyId,
+            @PathVariable Long jobId) {
+
+        JobResponse job = jobService.getJobForEdit(companyId, jobId);
+        return ResponseEntity.ok(job);
     }
 }
