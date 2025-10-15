@@ -1,10 +1,12 @@
 package com.jobspring.notification.service;
 
+import brave.internal.Nullable;
 import com.jobspring.notification.util.BizException;
 import com.jobspring.notification.util.CodeGenerator;
 import com.jobspring.notification.util.ErrorCode;
 import com.jobspring.notification.util.HashUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -16,7 +18,9 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class VerificationService {
 
-    private final StringRedisTemplate redis;
+    @Autowired(required = false)
+    @Nullable
+    private StringRedisTemplate redis;
     private final MailService mail;
 
     @Value("${security.verification.expMinutes:10}")
