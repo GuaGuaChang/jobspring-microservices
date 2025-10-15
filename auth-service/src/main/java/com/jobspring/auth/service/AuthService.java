@@ -14,9 +14,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -93,5 +95,18 @@ public class AuthService {
         return accountRepository.findAllById(ids).stream()
                 .map(a -> new AccountBrief(a.getId(), a.getFullName()))
                 .toList();
+    }
+
+
+    public UserDTO getUserById(Long id) {
+        Account a = accountRepository.getUserById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        UserDTO dto = new UserDTO();
+        dto.setId(a.getId());
+        dto.setFullName(a.getFullName());
+        dto.setEmail(a.getEmail());
+        dto.setRole(a.getRole());
+        return dto;
     }
 }

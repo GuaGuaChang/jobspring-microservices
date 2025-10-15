@@ -40,6 +40,7 @@ public class CompanyController {
         return ResponseEntity.ok(dto);
     }
 
+
     // 提供给 job-service 调用的接口
     @GetMapping("/search")
     public List<Long> findCompanyIdsByName(@RequestParam String keyword) {
@@ -69,12 +70,6 @@ public class CompanyController {
                         c -> new CompanyDTO(c.getId(), c.getName())));
     }
 
-    // 提供给 job-service 调用的接口
-    @GetMapping("/hr/{userId}/company-id")
-    public Map<String, Long> getCompanyIdByHr(@PathVariable Long userId) {
-        Long companyId = companyService.getCompanyIdForHr(userId);
-        return Map.of("companyId", companyId);
-    }
 
     @GetMapping("/{companyId}/name")
     public ResponseEntity<String> getCompanyName(@PathVariable Long companyId) {
@@ -95,5 +90,6 @@ public class CompanyController {
         );
         return ResponseEntity.ok(jobs);
     }
+
 
 }

@@ -81,4 +81,8 @@ public class UserController {
         return userService.batchBrief(userIds);
     }
 
+    @GetMapping("/users/{id}")
+    public UserDTO getUserById(@PathVariable("id") Long id) {
+        return userService.getUserById(id);
+    }
 }

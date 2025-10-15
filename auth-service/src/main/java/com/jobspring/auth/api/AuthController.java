@@ -149,6 +149,14 @@ public class AuthController {
         return authService.batchBrief(userIds);
     }
 
+    @GetMapping("/users/{id}")
+    public ResponseEntity<UserDTO> get(@PathVariable Long id,
+                                       @RequestHeader(value = "X-Internal-Secret", required = false) String sec) {
+
+        UserDTO dto = authService.getUserById(id);
+        return (dto == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
+    }
+
     @GetMapping("/accounts/{userId}")
     public UserDTO getAccountById(@PathVariable Long userId) {
         var account = accounts.findById(userId)

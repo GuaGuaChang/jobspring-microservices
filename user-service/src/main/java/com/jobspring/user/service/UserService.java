@@ -4,12 +4,14 @@ import com.alibaba.nacos.shaded.javax.annotation.Nullable;
 import com.jobspring.user.client.AuthUserClient;
 import com.jobspring.user.dto.PromoteToHrRequest;
 import com.jobspring.user.dto.UserBrief;
+import com.jobspring.user.dto.UserDTO;
 import com.jobspring.user.dto.UserView;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,10 @@ public class UserService {
         return userIds.stream()
                 .map(id -> new UserBrief(id, nameById.getOrDefault(id, "(unknown)")))
                 .toList();
+    }
+
+    public UserDTO getUserById(@PathVariable("id") Long id) {
+        return authUserClient.getUserById(id);
     }
 }
 
