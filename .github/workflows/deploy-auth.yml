@@ -57,7 +57,7 @@ jobs:
             --platform=managed \
             --allow-unauthenticated \
             --add-cloudsql-instances="${{ secrets.CLOUD_SQL_CONN }}" \
-            --set-env-vars=CLOUD_SQL_CONNECTION_NAME="${{ secrets.CLOUD_SQL_CONN }}",SPRING_PROFILES_ACTIVE=prod \
-            --set-secrets=DB_USER=DB_USER:latest,DB_PASS=DB_PASS:latest,MAIL_USERNAME=MAIL_USERNAME:latest,MAIL_PASSWORD=MAIL_PASSWORD:latest,MAIL_FROM=MAIL_FROM:latest \
+            --set-env-vars=CLOUD_SQL_CONNECTION_NAME="${{ secrets.CLOUD_SQL_CONN }}",SPRING_PROFILES_ACTIVE=prod,JWT_TTL_MINUTES=10080 \
+            --set-secrets=DB_USER=DB_USER:latest,DB_PASS=DB_PASS:latest,MAIL_USERNAME=MAIL_USERNAME:latest,MAIL_PASSWORD=MAIL_PASSWORD:latest,MAIL_FROM=MAIL_FROM:latest, JWT_SECRET=JWT_SECRET:latest \
             --service-account="${{ secrets.RUNTIME_SA }}" \
             --memory=512Mi --cpu=1 --concurrency=80 --min-instances=0
