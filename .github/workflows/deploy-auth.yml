@@ -46,7 +46,8 @@ jobs:
 
       - name: Build & Push image with Jib
         run: |
-          mvn -pl ${SERVICE} -am -DskipTests jib:build -Djib.to.image=$IMAGE
+          IMAGE="asia-southeast1-docker.pkg.dev/${PROJECT_ID}/${REPO}/${SERVICE}:${GITHUB_SHA}"
+          mvn -pl ${SERVICE} -am -DskipTests jib:build -Dimage=$IMAGE
 
       - name: Deploy to Cloud Run
         run: |
