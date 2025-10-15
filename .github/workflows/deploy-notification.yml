@@ -44,10 +44,14 @@ jobs:
         run: |
           gcloud services enable run.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com
 
+      - name: Configure Artifact Registry Docker auth
+        run: |
+          gcloud auth configure-docker asia-southeast1-docker.pkg.dev -q
+
       - name: Build & Push image with Jib
         run: |
-          IMAGE="asia-southeast1-docker.pkg.dev/${PROJECT_ID}/${REPO}/${SERVICE}:${GITHUB_SHA}"
-          mvn -pl ${SERVICE} -am -DskipTests clean compile jib:build -Dimage=$IMAGE
+          mvn -f pom.xml -pl :notification-service -am -DskipTests clean compile \
+            com.google.cloud.tools:jib-maven-plugin:3.4.1:build -Dimage=${IMAGE_URI}
 
       - name: Deploy to Cloud Run
         run: |
