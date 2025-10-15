@@ -20,7 +20,7 @@ public class Application {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "profile_id", nullable = false)
+    @Column(name = "profile_id")
     private Long profileId;
 
     @Column(nullable = false)

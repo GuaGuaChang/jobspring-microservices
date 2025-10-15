@@ -51,14 +51,12 @@ public class ApplicationController {
         var resp = applicationService.getApplicationDetail(userId, companyId, applicationId);
         return ResponseEntity.ok(resp);
     }
-    @PatchMapping("/applications/{applicationId}/status")
-    @PreAuthorize("hasAnyRole('HR')")
+    @PostMapping("/applications/{applicationId}/status")
     public ResponseEntity<ApplicationBriefResponse> updateStatus(
             @PathVariable Long applicationId,
             @RequestBody UpdateStatusBody body,
-            Authentication auth) {
+            @RequestHeader("X-User-Id") Long hrUserId) {
 
-        Long hrUserId = Long.valueOf(auth.getName());
         ApplicationBriefResponse res =
                 applicationService.updateStatus(hrUserId, applicationId, body.getStatus());
         return ResponseEntity.ok(res);
