@@ -27,10 +27,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
 
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
 
   mail:
     host: smtp.qq.com
@@ -44,6 +40,9 @@ spring:
           starttls:
             enable: true
             required: true
+  data:
+    redis:
+      url: ${REDIS_URL}
 
 management:
   endpoints:
