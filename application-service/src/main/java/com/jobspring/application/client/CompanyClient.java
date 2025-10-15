@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient("company-service")
 public interface CompanyClient {
 
-    @GetMapping("/hr/{hrUserId}/company-id")
+    @GetMapping("/hr/{hrUserId}/companyId")
     Long findCompanyIdByHr(@PathVariable("hrUserId") Long hrUserId);
 
 
