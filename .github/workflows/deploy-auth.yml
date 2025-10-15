@@ -1,0 +1,64 @@
+name: Deploy auth-service to Cloud Run
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'auth-service/**'
+      - '.github/workflows/deploy-auth.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    env:
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      REGION: asia-southeast1
+      REPO: jobspring-docker
+      SERVICE: auth-service
+      CLOUD_SQL_CONN: ${{ secrets.CLOUD_SQL_CONN }}
+      RUNTIME_SA: ${{ secrets.RUNTIME_SA }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Enable APIs
+        run: |
+          gcloud services enable run.googleapis.com sqladmin.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com
+
+      - name: Build & Push image
+        run: |
+          IMAGE="asia-southeast1-docker.pkg.dev/${PROJECT_ID}/${REPO}/${SERVICE}:${GITHUB_SHA}"
+          mvn -pl ${SERVICE} -am -DskipTests jib:build -Djib.to.image=$IMAGE
+          echo "IMAGE_REF=$IMAGE" >> $GITHUB_ENV
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${SERVICE} \
+            --region=${REGION} \
+            --image=${IMAGE_REF} \
+            --platform=managed \
+            --allow-unauthenticated \
+            --add-cloudsql-instances="${CLOUD_SQL_CONN}" \
+            --set-env-vars=CLOUD_SQL_CONNECTION_NAME="${CLOUD_SQL_CONN}",SPRING_PROFILES_ACTIVE=prod \
+            --set-secrets=DB_USER=DB_USER:latest,DB_PASS=DB_PASS:latest,MAIL_USERNAME=MAIL_USERNAME:latest,MAIL_PASSWORD=MAIL_PASSWORD:latest \
+            --service-account="${RUNTIME_SA}" \
+            --memory=512Mi --cpu=1 --concurrency=80 --min-instances=0

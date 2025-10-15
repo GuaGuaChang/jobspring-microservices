@@ -8,6 +8,16 @@ spring:
     nacos:
       discovery:
         server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+      config:
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+        file-extension: yaml
+        refresh-enabled: true
+
+  config:
+    import:
+      - optional:nacos:common.yaml
+      - optional:nacos:auth-service.yaml
+
   mail:
     host: smtp.qq.com
     port: 587
@@ -52,4 +62,4 @@ management:
     tracing:
       endpoint: ${ZIPKIN_ENDPOINT:http://127.0.0.1:9411/api/v2/spans}
 
-management.endpoints.web.exposure.include: ""
+management.endpoints.web.exposure.include: health,info
