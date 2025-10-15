@@ -4,8 +4,6 @@ server:
 spring:
   application:
     name: auth-service
-  config:
-    import: "optional:"
   cloud:
     discovery:
       enabled: false
