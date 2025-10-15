@@ -4,17 +4,22 @@ import com.jobspring.application.client.CompanyClient;
 import com.jobspring.application.client.JobClient;
 import com.jobspring.application.client.UserClient;
 import com.jobspring.application.dto.ApplicationBriefResponse;
+import com.jobspring.application.dto.ApplicationDetailResponse;
 import com.jobspring.application.dto.JobDTO;
+import com.jobspring.application.dto.UserDTO;
 import com.jobspring.application.entity.Application;
 import com.jobspring.application.repository.ApplicationRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -26,6 +31,8 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final UserClient userClient;
     private final JobClient jobClient;
+    private static final Set<Integer> ALLOWED =
+            Set.of(0, 1, 2, 3, 4);
 
     public Page<ApplicationBriefResponse> listCompanyApplications(
             Long hrUserId,
@@ -99,5 +106,63 @@ public class ApplicationService {
             dto.setCompanyName(job.getCompany());
         }
         return dto;
+    }
+
+    public ApplicationDetailResponse getApplicationDetail(Long hrUserId, Long companyId, Long applicationId) {
+        Long effectiveCompanyId = (companyId == null)
+                ? companyClient.findCompanyIdByHr(hrUserId)
+                : validateAndReturn(hrUserId, companyId);
+
+        Application app = applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new EntityNotFoundException("Application not found"));
+
+        Long jobCompanyId = app.getCompanyId();
+        if (!jobCompanyId.equals(effectiveCompanyId)) {
+            throw new SecurityException("You are not allowed to access this application");
+        }
+
+        return toDetail(app);
+    }
+    private ApplicationDetailResponse toDetail(Application a) {
+        ApplicationDetailResponse r = new ApplicationDetailResponse();
+        JobDTO job = jobClient.getJobById(a.getJobId());
+        UserDTO user = userClient.getUserById(a.getUserId());
+        r.setId(a.getId());
+        r.setJobId(a.getJobId());
+        r.setJobTitle(job.getTitle());
+        r.setApplicantId(a.getUserId());
+        r.setApplicantName(user.getFullName());
+        r.setApplicantEmail(user.getEmail());
+        r.setStatus(a.getStatus());
+        r.setAppliedAt(a.getAppliedAt());
+        r.setResumeUrl(a.getResumeUrl());
+        r.setResumeProfile(a.getResumeProfile());
+        return r;
+    }
+    @Transactional
+    public ApplicationBriefResponse updateStatus(Long hrUserId, Long applicationId, Integer newStatus) {
+        if (newStatus == null || !ALLOWED.contains(newStatus)) {
+            throw new IllegalArgumentException("Illegal application status：" + newStatus);
+        }
+
+        // 取出申请 + 关联的 job & company
+        Application app = applicationRepository.findByIdWithJobAndCompany(applicationId)
+                .orElseThrow(() -> new EntityNotFoundException("Application not found"));
+
+
+        Long hrCompanyId = companyClient.findCompanyIdByHr(hrUserId);
+        Long appCompanyId = app.getCompanyId();
+        if (!appCompanyId.equals(hrCompanyId)) {
+            throw new AccessDeniedException("No permission to operate applications from other companies");
+        }
+
+        if (app.getStatus() != 0) {
+            throw new IllegalStateException("This position is no longer valid and the application status cannot be modified");
+        }
+
+
+        app.setStatus(newStatus);
+
+        return toBrief(app);
     }
 }

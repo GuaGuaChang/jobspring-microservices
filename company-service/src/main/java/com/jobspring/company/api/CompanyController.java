@@ -70,10 +70,10 @@ public class CompanyController {
                         c -> new CompanyDTO(c.getId(), c.getName())));
     }
 
-    // 提供给 job-service 调用的接口
-    @GetMapping("/hr/{userId}/company-id")
-    public Map<String, Long> getCompanyIdByHr(@PathVariable Long userId) {
-        Long companyId = companyService.getCompanyIdForHr(userId);
-        return Map.of("companyId", companyId);
-    }
+//    // 提供给 job-service 调用的接口
+//    @GetMapping("/hr/{userId}/company-id")
+//    public Map<String, Long> getCompanyIdByHr(@PathVariable Long userId) {
+//        Long companyId = companyService.getCompanyIdForHr(userId);
+//        return Map.of("companyId", companyId);
+//    }
 }

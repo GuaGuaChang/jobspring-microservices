@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
     @Query("select a from Application a where a.userId = :userId order by a.appliedAt desc")
     Page<Application> findMyApplications(Long userId, Pageable pageable);
@@ -28,4 +30,10 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
             @Param("jobId") Long jobId,
             @Param("status") Integer status,
             Pageable pageable);
+
+    @Query("""
+              select a from Application a
+              where a.id = :id
+            """)
+    Optional<Application> findByIdWithJobAndCompany(@Param("id") Long id);
 }

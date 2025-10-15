@@ -39,4 +39,7 @@ public interface AuthUserClient {
 
     @GetMapping(value = "/me", consumes = MediaType.APPLICATION_JSON_VALUE)
     UserView getCurrentUser(@RequestHeader("X-User-Id") String uid);
+
+    @GetMapping("/users/{id}")
+    UserDTO getUserById(@PathVariable("id") Long id);
 }
