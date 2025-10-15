@@ -46,7 +46,10 @@ jobs:
 
       - name: Build & Push image with Jib
         run: |
-          mvn -pl ${SERVICE} -am -DskipTests jib:build -Djib.to.image=${IMAGE_URI}
+          IMAGE="asia-southeast1-docker.pkg.dev/${PROJECT_ID}/${REPO}/${SERVICE}:${GITHUB_SHA}"
+          mvn -f ${SERVICE}/pom.xml -DskipTests \
+            com.google.cloud.tools:jib-maven-plugin:3.4.1:build \
+            -Djib.to.image=$IMAGE
 
       - name: Deploy to Cloud Run
         run: |
