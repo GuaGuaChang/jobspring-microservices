@@ -10,15 +10,14 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -267,5 +266,31 @@ public class JobService {
         return jobRepository.findAllById(jobIds).stream()
                 .map(j -> new JobBrief(j.getId(), j.getTitle(), j.getCompanyId()))
                 .toList();
+    }
+
+    public JobResponse getJobForEdit(Long companyId, Long jobId) {
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new EntityNotFoundException("Job not found"));
+
+        if (!Objects.equals(job.getCompanyId(), companyId)) {
+            throw new AccessDeniedException("You do not have permission to edit this job");
+        }
+
+        return mapToResponse(job);
+    }
+
+    private JobResponse mapToResponse(Job job) {
+        JobResponse res = new JobResponse();
+        res.setId(job.getId());
+        res.setCompanyId(job.getCompanyId());
+        res.setTitle(job.getTitle());
+        res.setLocation(job.getLocation());
+        res.setEmploymentType(job.getEmploymentType());
+        res.setSalaryMin(job.getSalaryMin());
+        res.setSalaryMax(job.getSalaryMax());
+        res.setDescription(job.getDescription());
+        res.setStatus(job.getStatus());
+        res.setPostedAt(job.getPostedAt());
+        return res;
     }
 }

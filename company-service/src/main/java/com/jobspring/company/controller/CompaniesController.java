@@ -94,7 +94,7 @@ public class CompaniesController {
         return companyRepository.save(req);
     }
 
-    @GetMapping("/hr/{hrUserId}/company-id")
+    @GetMapping("/hr/{hrUserId}/companyId")
     public Long findCompanyIdByHr(@PathVariable Long hrUserId) {
         return companyService.findCompanyIdByHr(hrUserId);
     }

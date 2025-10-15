@@ -27,4 +27,8 @@ public interface JobClient {
 
     @GetMapping("/skills")
     List<SkillDTO> getAllSkills();
+
+    @GetMapping("/{jobId}/for-edit")
+    JobResponse getJobForEdit(@RequestParam("companyId") Long companyId,
+                              @PathVariable("jobId") Long jobId);
 }
