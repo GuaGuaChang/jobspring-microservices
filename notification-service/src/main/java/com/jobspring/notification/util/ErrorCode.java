@@ -26,7 +26,8 @@ public enum ErrorCode {
     VERIFY_CODE_INVALID(2002, HttpStatus.BAD_REQUEST, "Invalid verification code"),
 
     // 5xxx - server side
-    INTERNAL_ERROR(1500, HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
+    INTERNAL_ERROR(1500, HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"),
+    SERVICE_UNAVAILABLE(1503, HttpStatus.SERVICE_UNAVAILABLE, "Service temporarily unavailable");
 
     private final int code;
     private final HttpStatus httpStatus;
