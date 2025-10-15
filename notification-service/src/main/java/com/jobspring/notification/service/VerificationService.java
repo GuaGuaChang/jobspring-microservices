@@ -42,6 +42,7 @@ public class VerificationService {
         }
     }
 
+
     public void sendRegisterCode(String email) {
         ensureRedis();
 
