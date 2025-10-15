@@ -145,7 +145,6 @@ public class ApplicationService {
             throw new IllegalArgumentException("Illegal application status：" + newStatus);
         }
 
-        // 取出申请 + 关联的 job & company
         Application app = applicationRepository.findByIdWithJobAndCompany(applicationId)
                 .orElseThrow(() -> new EntityNotFoundException("Application not found"));
 
