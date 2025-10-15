@@ -42,4 +42,7 @@ public interface AuthUserClient {
 
     @GetMapping("/users/{id}")
     UserDTO getUserById(@PathVariable("id") Long id);
+
+    @GetMapping("/accounts/{userId}")
+    UserDTO getAccountById(@PathVariable("userId") Long userId);
 }

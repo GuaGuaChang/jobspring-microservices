@@ -5,8 +5,10 @@ import com.jobspring.notification.util.CodeGenerator;
 import com.jobspring.notification.util.ErrorCode;
 import com.jobspring.notification.util.HashUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -16,7 +18,9 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class VerificationService {
 
-    private final StringRedisTemplate redis;
+    @Autowired(required = false)
+    @Nullable
+    private StringRedisTemplate redis;
     private final MailService mail;
 
     @Value("${security.verification.expMinutes:10}")
@@ -31,7 +35,16 @@ public class VerificationService {
     @Value("${security.verification.maxAttempts:5}")
     private int maxAttempts;
 
+    private void ensureRedis() {
+        if (redis == null) {
+            throw new BizException(ErrorCode.SERVICE_UNAVAILABLE,
+                    "Verification service temporarily unavailable (no Redis configured).");
+        }
+    }
+
     public void sendRegisterCode(String email) {
+        ensureRedis();
+
         String codeKey = "verify:register:" + email;
         String timeKey = "verify:lastsent:" + email;
         String countKey = "verify:dailycount:" + email;

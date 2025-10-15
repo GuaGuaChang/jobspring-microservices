@@ -1,13 +1,12 @@
 package com.jobspring.company.api;
 
-import com.jobspring.company.dto.CompanyDTO;
-import com.jobspring.company.dto.CompanyFavouriteResponse;
-import com.jobspring.company.dto.CompanyResponse;
+import com.jobspring.company.dto.*;
 import com.jobspring.company.entity.Company;
 import com.jobspring.company.repository.CompanyRepository;
 import com.jobspring.company.service.CompanyService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +33,7 @@ public class CompanyController {
         CompanyResponse dto = new CompanyResponse();
         dto.setId(company.getId());
         dto.setName(company.getName());
+        dto.setWebsite(company.getWebsite());
         dto.setLogoUrl(company.getLogoUrl());
         dto.setDescription(company.getDescription());
 
@@ -70,10 +70,26 @@ public class CompanyController {
                         c -> new CompanyDTO(c.getId(), c.getName())));
     }
 
-//    // 提供给 job-service 调用的接口
-//    @GetMapping("/hr/{userId}/company-id")
-//    public Map<String, Long> getCompanyIdByHr(@PathVariable Long userId) {
-//        Long companyId = companyService.getCompanyIdForHr(userId);
-//        return Map.of("companyId", companyId);
-//    }
+
+    @GetMapping("/{companyId}/name")
+    public ResponseEntity<String> getCompanyName(@PathVariable Long companyId) {
+        return companyRepository.findById(companyId)
+                .map(c -> ResponseEntity.ok(c.getName()))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{companyId}/jobs")
+    public ResponseEntity<PageResponse<JobResponse>> listCompanyJobs(
+            @PathVariable Long companyId,
+            @RequestParam(required = false) Integer status,
+            Pageable pageable
+    ) {
+        PageResponse<JobResponse> jobs = companyService.listCompanyJobs(
+                companyId, status,
+                pageable.getPageNumber(), pageable.getPageSize()
+        );
+        return ResponseEntity.ok(jobs);
+    }
+
+
 }
