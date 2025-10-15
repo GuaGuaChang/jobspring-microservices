@@ -29,4 +29,6 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
                               Pageable pageable);
 
     Page<Account> findAll(Specification<Account> userSpecification, Pageable pageable);
+
+    Optional<Account> getUserById(Long id);
 }
