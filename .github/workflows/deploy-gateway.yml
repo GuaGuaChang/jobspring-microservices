@@ -1,11 +1,11 @@
-name: Deploy auth-service (Cloud Run)
+name: Deploy gateway-service (Cloud Run)
 
 on:
   push:
     branches: [ master ]
     paths:
-      - 'auth-service/**'
-      - '.github/workflows/deploy-auth.yml'
+      - 'gateway-service/**'
+      - '.github/workflows/deploy-gateway.yml'
 
 jobs:
   deploy:
@@ -18,8 +18,8 @@ jobs:
       REGION: asia-southeast1
       PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       REPO: jobspring-docker
-      SERVICE: auth-service
-      IMAGE_URI: asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/jobspring-docker/auth-service:${{ github.sha }}
+      SERVICE: gateway-service
+      IMAGE_URI: asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/jobspring-docker/gateway-service:${{ github.sha }}
 
     steps:
       - uses: actions/checkout@v4
@@ -42,7 +42,7 @@ jobs:
 
       - name: Enable APIs
         run: |
-          gcloud services enable run.googleapis.com sqladmin.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com
+          gcloud services enable run.googleapis.com artifactregistry.googleapis.com
 
       - name: Build & Push image with Jib
         run: |
@@ -56,8 +56,7 @@ jobs:
             --image=${IMAGE_URI} \
             --platform=managed \
             --allow-unauthenticated \
-            --add-cloudsql-instances="${{ secrets.CLOUD_SQL_CONN }}" \
-            --set-env-vars=CLOUD_SQL_CONNECTION_NAME="${{ secrets.CLOUD_SQL_CONN }}",SPRING_PROFILES_ACTIVE=prod,JWT_TTL_MINUTES=10080,REDIS_URL="${{ secrets.REDIS_URL }}" \
-            --set-secrets=DB_USER=DB_USER:latest,DB_PASS=DB_PASS:latest,MAIL_USERNAME=MAIL_USERNAME:latest,MAIL_PASSWORD=MAIL_PASSWORD:latest,MAIL_FROM=MAIL_FROM:latest,JWT_SECRET=JWT_SECRET:latest \
             --service-account="${{ secrets.RUNTIME_SA }}" \
+            --set-env-vars=SPRING_PROFILES_ACTIVE=prod,AUTH_BASE_URL="${{ secrets.AUTH_BASE_URL }}" \
+            --set-secrets=JWT_SECRET=JWT_SECRET:latest \
             --memory=512Mi --cpu=1 --concurrency=80 --min-instances=0
