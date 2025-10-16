@@ -6,10 +6,13 @@ spring:
     name: job-service
 
   datasource:
-    url: jdbc:mysql:///jobspring_job?cloudSqlInstance=${CLOUD_SQL_CONNECTION_NAME}&socketFactory=com.google.cloud.sql.mysql.SocketFactory&user=${DB_USER}&password=${DB_PASS}&useSSL=false&serverTimezone=Asia/Singapore&characterEncoding=utf8
+    url: jdbc:mysql://google/jobspring_job?cloudSqlInstance=${CLOUD_SQL_CONNECTION_NAME}&socketFactory=com.google.cloud.sql.mysql.SocketFactory&characterEncoding=utf8
+    username: ${DB_USER}
+    password: ${DB_PASS}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: validate
     properties:
