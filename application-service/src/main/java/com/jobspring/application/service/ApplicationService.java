@@ -144,6 +144,7 @@ public class ApplicationService {
         r.setAppliedAt(a.getAppliedAt());
         r.setResumeUrl(a.getResumeUrl());
         r.setResumeProfile(a.getResumeProfile());
+        r.setResumeFileId(a.getResumeFileId());
         return r;
     }
 
@@ -208,11 +209,11 @@ public class ApplicationService {
         }
 
         // 3) 处理简历：保存到 Mongo
-        String resumeUrl = null;
+        String publicId = null;
 
         validateFile(file);
         try {
-            resumeUrl = store(file).get("url");
+            publicId = store(file).get("publicId");
         } catch (IOException e) {
             throw new IllegalStateException("Failed to save file", e);
         }
@@ -226,7 +227,7 @@ public class ApplicationService {
         app.setStatus(0);
         app.setAppliedAt(LocalDateTime.now());
         app.setResumeProfile(form.getResumeProfile());
-        app.setResumeUrl(resumeUrl);
+        app.setResumeFileId(publicId);
 
         applicationRepository.save(app);
         return app.getId();
