@@ -42,16 +42,12 @@ jobs:
 
       - name: Enable APIs
         run: |
-          gcloud services enable run.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com
-
-      - name: Configure Artifact Registry Docker auth
-        run: |
-          gcloud auth configure-docker asia-southeast1-docker.pkg.dev -q
+          gcloud services enable run.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com secretmanager.googleapis.com
 
       - name: Build & Push image with Jib
         run: |
-          mvn -f pom.xml -pl :notification-service -am -DskipTests clean compile \
-            com.google.cloud.tools:jib-maven-plugin:3.4.1:build -Dimage=${IMAGE_URI}
+          IMAGE="asia-southeast1-docker.pkg.dev/${PROJECT_ID}/${REPO}/${SERVICE}:${GITHUB_SHA}"
+          mvn -pl ${SERVICE} -am -DskipTests clean compile jib:build -Dimage=$IMAGE
 
       - name: Deploy to Cloud Run
         run: |
@@ -64,4 +60,5 @@ jobs:
             --set-env-vars=SPRING_PROFILES_ACTIVE=prod \
             --set-secrets=MAIL_USERNAME=MAIL_USERNAME:latest,MAIL_PASSWORD=MAIL_PASSWORD:latest,MAIL_FROM=MAIL_FROM:latest \
             --set-env-vars=MAIL_HOST=${{ secrets.MAIL_HOST }},MAIL_PORT=${{ secrets.MAIL_PORT }} \
+            --service-account="${{ secrets.RUNTIME_SA }}" \
             --memory=512Mi --cpu=1 --concurrency=80 --min-instances=0
