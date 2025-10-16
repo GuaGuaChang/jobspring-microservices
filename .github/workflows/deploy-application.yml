@@ -1,26 +1,21 @@
-name: Deploy gateway-service (Cloud Run)
-
+name: Deploy application-service (Cloud Run)
 on:
   push:
     branches: [ master ]
     paths:
-      - 'gateway-service/**'
-      - '.github/workflows/deploy-gateway.yml'
+      - 'application-service/**'
+      - '.github/workflows/deploy-application.yml'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-
+    permissions: { contents: read, id-token: write }
     env:
       REGION: asia-southeast1
       PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       REPO: jobspring-docker
-      SERVICE: gateway-service
-      IMAGE_URI: asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/jobspring-docker/gateway-service:${{ github.sha }}
-
+      SERVICE: application-service
+      IMAGE_URI: asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/jobspring-docker/application-service:${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
 
@@ -42,9 +37,9 @@ jobs:
 
       - name: Enable APIs
         run: |
-          gcloud services enable run.googleapis.com artifactregistry.googleapis.com
+          gcloud services enable run.googleapis.com sqladmin.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com
 
-      - name: Build & Push image with Jib
+      - name: Build & Push with Jib
         run: |
           IMAGE="asia-southeast1-docker.pkg.dev/${PROJECT_ID}/${REPO}/${SERVICE}:${GITHUB_SHA}"
           mvn -pl ${SERVICE} -am -DskipTests clean compile jib:build -Dimage=$IMAGE
@@ -56,13 +51,9 @@ jobs:
             --image=${IMAGE_URI} \
             --platform=managed \
             --allow-unauthenticated \
+            --add-cloudsql-instances="${{ secrets.CLOUD_SQL_CONN }}" \
+            --set-env-vars=SPRING_PROFILES_ACTIVE=prod,CLOUD_SQL_CONNECTION_NAME="${{ secrets.CLOUD_SQL_CONN }}" \
+            --set-env-vars=MONGODB_URI="${{ secrets.MONGODB_URI }}",ZIPKIN_ENDPOINT="${{ secrets.ZIPKIN_ENDPOINT }}" \
+            --set-secrets=DB_USER=DB_USER:latest,DB_PASS=DB_PASS:latest \
             --service-account="${{ secrets.RUNTIME_SA }}" \
-            --set-env-vars=SPRING_PROFILES_ACTIVE=prod \
-            --set-env-vars=AUTH_BASE_URL=${{ secrets.AUTH_BASE_URL }} \
-            --set-env-vars=USER_BASE_URL=${{ secrets.USER_BASE_URL }} \
-            --set-env-vars=COMPANY_BASE_URL=${{ secrets.COMPANY_BASE_URL }} \
-            --set-env-vars=JOB_BASE_URL=${{ secrets.JOB_BASE_URL }} \
-            --set-env-vars=APPLICATION_BASE_URL=${{ secrets.APPLICATION_BASE_URL }} \
-            --set-env-vars=NOTIFICATION_BASE_URL=${{ secrets.NOTIFICATION_BASE_URL }} \
-            --set-secrets=JWT_SECRET=JWT_SECRET:latest \
             --memory=512Mi --cpu=1 --concurrency=80 --min-instances=0
