@@ -4,6 +4,14 @@ server:
 spring:
   application:
     name: job-service
+  cloud:
+    discovery:
+      enabled: false
+    nacos:
+      discovery:
+        enabled: false
+      config:
+        enabled: false
 
   datasource:
     url: jdbc:mysql://google/jobspring_job?cloudSqlInstance=${CLOUD_SQL_CONNECTION_NAME}&socketFactory=com.google.cloud.sql.mysql.SocketFactory&characterEncoding=utf8
@@ -18,15 +26,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-
-  cloud:
-    discovery:
-      enabled: false
-    nacos:
-      discovery:
-        enabled: false
-      config:
-        enabled: false
 
 logging:
   level:
