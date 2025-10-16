@@ -3,23 +3,27 @@ package com.jobspring.application.service;
 import com.jobspring.application.client.CompanyClient;
 import com.jobspring.application.client.JobClient;
 import com.jobspring.application.client.UserClient;
-import com.jobspring.application.dto.ApplicationBriefResponse;
-import com.jobspring.application.dto.ApplicationDetailResponse;
-import com.jobspring.application.dto.JobDTO;
-import com.jobspring.application.dto.UserDTO;
+import com.jobspring.application.dto.*;
 import com.jobspring.application.entity.Application;
+import com.jobspring.application.entity.PdfFile;
 import com.jobspring.application.repository.ApplicationRepository;
+import com.jobspring.application.repository.PdfRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.Binary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -31,6 +35,8 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final UserClient userClient;
     private final JobClient jobClient;
+    private final PdfRepository pdfRepository;
+
     private static final Set<Integer> ALLOWED =
             Set.of(0, 1, 2, 3, 4);
 
@@ -123,6 +129,7 @@ public class ApplicationService {
 
         return toDetail(app);
     }
+
     private ApplicationDetailResponse toDetail(Application a) {
         ApplicationDetailResponse r = new ApplicationDetailResponse();
         JobDTO job = jobClient.getJobById(a.getJobId());
@@ -139,6 +146,7 @@ public class ApplicationService {
         r.setResumeProfile(a.getResumeProfile());
         return r;
     }
+
     @Transactional
     public ApplicationBriefResponse updateStatus(Long hrUserId, Long applicationId, Integer newStatus) {
         if (newStatus == null || !ALLOWED.contains(newStatus)) {
@@ -163,5 +171,72 @@ public class ApplicationService {
         app.setStatus(newStatus);
 
         return toBrief(app);
+    }
+
+    //保存文件到 Mongo，返回 {publicId, url}
+    public Map<String, String> store(MultipartFile file) throws IOException {
+        String publicId = UUID.randomUUID().toString().replace("-", "");
+
+        PdfFile pdf = PdfFile.builder()
+                .publicId(publicId)
+                .filename(file.getOriginalFilename())
+                .contentType(file.getContentType())
+                .data(new Binary(file.getBytes()))
+                .uploadAt(Instant.now())
+                .build();
+
+        pdfRepository.save(pdf);
+
+        UriComponentsBuilder b = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/api/files/download/{pid}");
+        String url = b.buildAndExpand(publicId).toUriString();
+
+        return Map.of("publicId", publicId, "url", url);
+    }
+
+    @Transactional
+    public Long apply(Long jobId, Long userId, ApplicationDTO form, MultipartFile file) {
+        // 1) 远程校验岗位
+        JobSummaryDTO job = jobClient.getSummary(jobId);
+        if (job.getStatus() != 0) {
+            throw new IllegalStateException("Job inactive");
+        }
+
+        // 2) 防重复
+        if (applicationRepository.existsByJobIdAndUserId(jobId, userId)) {
+            throw new IllegalArgumentException("Already applied");
+        }
+
+        // 3) 处理简历：保存到 Mongo
+        String resumeUrl = null;
+
+        validateFile(file);
+        try {
+            resumeUrl = store(file).get("url");
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to save file", e);
+        }
+
+
+        // 4) 入库
+        Application app = new Application();
+        app.setJobId(jobId);
+        app.setUserId(userId);
+        app.setCompanyId(job.getCompanyId());
+        app.setStatus(0);
+        app.setAppliedAt(LocalDateTime.now());
+        app.setResumeProfile(form.getResumeProfile());
+        app.setResumeUrl(resumeUrl);
+
+        applicationRepository.save(app);
+        return app.getId();
+    }
+
+    private void validateFile(MultipartFile file) {
+        if (file.getSize() > 5 * 1024 * 1024) throw new IllegalArgumentException("File too large");
+        if (!"application/pdf".equalsIgnoreCase(
+                Optional.ofNullable(file.getContentType()).orElse(""))) {
+            throw new IllegalArgumentException("Only PDF allowed");
+        }
     }
 }

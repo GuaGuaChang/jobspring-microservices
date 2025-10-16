@@ -4,7 +4,7 @@ import lombok.Data;
 import org.antlr.v4.runtime.misc.NotNull;
 
 @Data
-public  class UpdateStatusBody {
+public class UpdateStatusBody {
     @NotNull
     private Integer status;
 }
