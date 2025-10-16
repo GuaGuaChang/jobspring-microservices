@@ -1,16 +1,21 @@
 package com.jobspring.application.api;
 
 import com.jobspring.application.dto.ApplicationBriefResponse;
+import com.jobspring.application.dto.ApplicationDTO;
 import com.jobspring.application.dto.ApplicationDetailResponse;
 import com.jobspring.application.dto.UpdateStatusBody;
 import com.jobspring.application.service.ApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
@@ -60,5 +65,15 @@ public class ApplicationController {
         ApplicationBriefResponse res =
                 applicationService.updateStatus(hrUserId, applicationId, body.getStatus());
         return ResponseEntity.ok(res);
+    }
+
+    @PostMapping(value = "/applications/{jobId}/applications", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> apply(@PathVariable Long jobId,
+                                      @ModelAttribute ApplicationDTO form,
+                                      @RequestPart(value = "file", required = false) MultipartFile file,
+                                      Authentication auth) {
+        Long userId = Long.valueOf(auth.getName());
+        Long id = applicationService.apply(jobId, userId, form, file);
+        return ResponseEntity.created(URI.create("/api/applications/" + id)).build();
     }
 }
