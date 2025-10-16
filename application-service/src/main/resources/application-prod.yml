@@ -1,0 +1,38 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: application-service
+
+  datasource:
+    url: jdbc:mysql:///jobspring_application?cloudSqlInstance=${CLOUD_SQL_CONNECTION_NAME}&socketFactory=com.google.cloud.sql.mysql.SocketFactory&useSSL=false&serverTimezone=Asia/Singapore&characterEncoding=utf8
+    username: ${DB_USER}
+    password: ${DB_PASS}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+
+  cloud:
+    discovery:
+      enabled: false
+    nacos:
+      discovery.enabled: false
+      config.enabled: false
+
+management:
+  tracing.sampling.probability: 1.0
+  zipkin.tracing.endpoint: ${ZIPKIN_ENDPOINT}
