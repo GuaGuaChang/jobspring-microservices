@@ -43,6 +43,41 @@ spring:
           filters:
             - StripPrefix=2
 
+        - id: user
+          uri: ${USER_BASE_URL}
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - StripPrefix=2
+
+        - id: company
+          uri: ${COMPANY_BASE_URL}
+          predicates:
+            - Path=/api/company/**
+          filters:
+            - StripPrefix=2
+
+        - id: job
+          uri: ${JOB_BASE_URL}
+          predicates:
+            - Path=/api/job/**
+          filters:
+            - StripPrefix=2
+
+        - id: application
+          uri: ${APPLICATION_BASE_URL}
+          predicates:
+            - Path=/api/application/**
+          filters:
+            - StripPrefix=2
+
+        - id: notification
+          uri: ${NOTIFICATION_BASE_URL}
+          predicates:
+            - Path=/api/notification/**
+          filters:
+            - StripPrefix=2
+
 management:
   endpoints:
     web:
