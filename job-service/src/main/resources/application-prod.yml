@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 spring:
   application:
@@ -21,6 +21,7 @@ spring:
 
   flyway:
     enabled: true
+    baseline-on-migrate: true
 
   cloud:
     discovery:
@@ -30,14 +31,6 @@ spring:
         enabled: false
       config:
         enabled: false
-
-management:
-  tracing:
-    sampling:
-      probability: 1.0
-  zipkin:
-    tracing:
-      endpoint: ${ZIPKIN_ENDPOINT:http://127.0.0.1:9411/api/v2/spans}
 
 logging:
   level:
