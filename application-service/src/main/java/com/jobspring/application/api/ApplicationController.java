@@ -45,6 +45,7 @@ public class ApplicationController {
                 .listCompanyApplications(hrUserId, null, jobId, status, pageable);
         return ResponseEntity.ok(page);
     }
+
     @PreAuthorize("hasAnyRole('HR','ADMIN')")
     @GetMapping("/{applicationId}")
     public ResponseEntity<ApplicationDetailResponse> getApplicationDetail(
@@ -56,6 +57,7 @@ public class ApplicationController {
         var resp = applicationService.getApplicationDetail(userId, companyId, applicationId);
         return ResponseEntity.ok(resp);
     }
+
     @PostMapping("/applications/{applicationId}/status")
     public ResponseEntity<ApplicationBriefResponse> updateStatus(
             @PathVariable Long applicationId,
