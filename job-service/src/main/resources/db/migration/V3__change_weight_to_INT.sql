@@ -1,0 +1,1 @@
+ALTER TABLE job_skills MODIFY COLUMN weight INT NOT NULL;
