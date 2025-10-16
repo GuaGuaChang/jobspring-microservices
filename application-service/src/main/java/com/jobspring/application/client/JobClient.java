@@ -1,6 +1,7 @@
 package com.jobspring.application.client;
 
 import com.jobspring.application.dto.JobDTO;
+import com.jobspring.application.dto.JobSummaryDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,5 +23,9 @@ public interface JobClient {
 
     record JobBrief(Long id, String title, Long companyId) {
     }
+
+    @GetMapping("/{id}/apply/summary")
+    JobSummaryDTO getSummary(@PathVariable("id") Long id);
+
 }
 

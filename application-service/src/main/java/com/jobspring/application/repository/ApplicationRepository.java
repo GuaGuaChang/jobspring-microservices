@@ -36,4 +36,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
               where a.id = :id
             """)
     Optional<Application> findByIdWithJobAndCompany(@Param("id") Long id);
+
+    boolean existsByJobIdAndUserId(Long jobId, Long userId);
 }

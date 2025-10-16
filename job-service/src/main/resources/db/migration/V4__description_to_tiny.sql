@@ -1,0 +1,1 @@
+ALTER TABLE jobs MODIFY COLUMN description TINYTEXT;

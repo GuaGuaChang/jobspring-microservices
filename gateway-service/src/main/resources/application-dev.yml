@@ -18,16 +18,16 @@ spring:
           enabled: true
           lower-case-service-id: true
       httpclient:
-        connect-timeout: 1000
-        response-timeout: 1s
+        connect-timeout: 3000
+        response-timeout: 20s
       default-filters:
         - name: Retry
           args:
-            retries: 1
+            retries: 2
             methods: GET
             backoff:
-              firstBackoff: 100ms
-              maxBackoff: 500ms
+              firstBackoff: 200ms
+              maxBackoff: 1000ms
               factor: 2
         - name: CircuitBreaker
           args:
@@ -108,3 +108,8 @@ resilience4j:
         failure-rate-threshold: 50
         wait-duration-in-open-state: 10s
         permitted-number-of-calls-in-half-open-state: 3
+  timelimiter:
+    instances:
+      gwDefault:
+        timeout-duration: 10s
+        cancel-running-future: true
