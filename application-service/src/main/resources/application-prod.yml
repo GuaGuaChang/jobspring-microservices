@@ -25,6 +25,7 @@ spring:
   data:
     mongodb:
       uri: ${MONGODB_URI}
+      database: jobspring
 
   cloud:
     discovery:
