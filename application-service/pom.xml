@@ -90,13 +90,6 @@
             <artifactId>spring-security-web</artifactId>
         </dependency>
 
-        <!-- 业务公共包 -->
-        <dependency>
-            <groupId>com.jobspring</groupId>
-            <artifactId>common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
         <!-- Lombok / Test -->
         <dependency>
             <groupId>org.projectlombok</groupId>
