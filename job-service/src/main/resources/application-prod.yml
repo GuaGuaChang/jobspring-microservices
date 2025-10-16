@@ -4,6 +4,7 @@ server:
 spring:
   application:
     name: job-service
+
   datasource:
     url: jdbc:mysql:///jobspring_job?cloudSqlInstance=${CLOUD_SQL_CONNECTION_NAME}&socketFactory=com.google.cloud.sql.mysql.SocketFactory&user=${DB_USER}&password=${DB_PASS}&useSSL=false&serverTimezone=Asia/Singapore&characterEncoding=utf8
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -19,9 +20,13 @@ spring:
     enabled: true
 
   cloud:
+    discovery:
+      enabled: false
     nacos:
       discovery:
-        server-addr: ${NACOS_ADDR:nacos-service:8848}
+        enabled: false
+      config:
+        enabled: false
 
 management:
   tracing:
