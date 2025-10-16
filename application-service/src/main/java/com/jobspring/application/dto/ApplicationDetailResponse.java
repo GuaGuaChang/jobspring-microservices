@@ -16,4 +16,5 @@ public class ApplicationDetailResponse {
     private LocalDateTime appliedAt;
     private String resumeUrl;
     private String resumeProfile;
+    private String resumeFileId;
 }

@@ -37,5 +37,8 @@ public class Application {
     @Lob
     @Column(name = "resume_url", columnDefinition = "LONGTEXT")
     private String resumeUrl;
+
+    @Column(name = "resume_file_id")
+    private String resumeFileId;
 }
 
