@@ -26,8 +26,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-
-logging:
-  level:
-    root: INFO
-    com.jobspring: INFO
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
