@@ -57,12 +57,12 @@ jobs:
             --platform=managed \
             --allow-unauthenticated \
             --service-account="${{ secrets.RUNTIME_SA }}" \
-            --set-env-vars=SPRING_PROFILES_ACTIVE=prod,\
-            AUTH_BASE_URL=${{ secrets.AUTH_BASE_URL }},\
-            USER_BASE_URL=${{ secrets.USER_BASE_URL }},\
-            COMPANY_BASE_URL=${{ secrets.COMPANY_BASE_URL }},\
-            JOB_BASE_URL=${{ secrets.JOB_BASE_URL }},\
-            APPLICATION_BASE_URL=${{ secrets.APPLICATION_BASE_URL }},\
-            NOTIFICATION_BASE_URL=${{ secrets.NOTIFICATION_BASE_URL }} \
+            --set-env-vars=SPRING_PROFILES_ACTIVE=prod \
+            --set-env-vars=AUTH_BASE_URL=${{ secrets.AUTH_BASE_URL }} \
+            --set-env-vars=USER_BASE_URL=${{ secrets.USER_BASE_URL }} \
+            --set-env-vars=COMPANY_BASE_URL=${{ secrets.COMPANY_BASE_URL }} \
+            --set-env-vars=JOB_BASE_URL=${{ secrets.JOB_BASE_URL }} \
+            --set-env-vars=APPLICATION_BASE_URL=${{ secrets.APPLICATION_BASE_URL }} \
+            --set-env-vars=NOTIFICATION_BASE_URL=${{ secrets.NOTIFICATION_BASE_URL }} \
             --set-secrets=JWT_SECRET=JWT_SECRET:latest \
             --memory=512Mi --cpu=1 --concurrency=80 --min-instances=0
