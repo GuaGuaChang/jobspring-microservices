@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name = "company-service")
+@FeignClient(name = "company-service", url = "${COMPANY_BASE_URL:}")
 public interface CompanyClient {
 
     @GetMapping("/{id}")

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "job-service")
+@FeignClient(name = "job-service", url = "${JOB_BASE_URL:}")
 public interface JobClient {
 
     @GetMapping("/company/{companyId}")
