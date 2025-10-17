@@ -18,6 +18,7 @@ public class JwtService {
     public Jws<Claims> verify(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
+                .setAllowedClockSkewSeconds(60)
                 .build()
                 .parseClaimsJws(token);
     }
