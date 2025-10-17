@@ -13,6 +13,7 @@ public class CorsConfig {
         CorsConfiguration c = new CorsConfiguration();
         c.setAllowCredentials(true);
         c.addAllowedOrigin("http://localhost:5173");
+        c.addAllowedOrigin("https://jobspringmicroservicesfrontend.vercel.app/");
         c.addAllowedOrigin("http://localhost:3000");
         c.addAllowedHeader("*");
         c.addAllowedMethod("*");
