@@ -5,6 +5,8 @@ spring:
   application:
     name: gateway-service
   cloud:
+    discovery:
+      enabled: false
     nacos:
       discovery:
         enabled: false
