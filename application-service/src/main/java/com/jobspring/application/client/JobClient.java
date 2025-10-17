@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(name = "job-service")
+@FeignClient(name = "job-service", url = "${JOB_BASE_URL:}")
 public interface JobClient {
     @GetMapping("/{id}")
     JobDTO getJobById(@PathVariable("id") Long id);

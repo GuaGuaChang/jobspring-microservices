@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient("auth-service")
+@FeignClient(name = "auth-service", url = "${AUTH_BASE_URL:}")
 public interface AuthUserClient {
 
 //    @GetMapping("/{userId}")

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient("company-service")
+@FeignClient(name = "company-service", url = "${COMPANY_BASE_URL:}")
 public interface CompanyClient {
 
     @GetMapping("/hr/{hrUserId}/companyId")
