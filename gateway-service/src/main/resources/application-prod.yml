@@ -42,6 +42,7 @@ spring:
             - Path=/api/auth/**
           filters:
             - StripPrefix=2
+            - RemoveRequestHeader=Authorization
 
         - id: user
           uri: ${USER_BASE_URL}
@@ -49,6 +50,7 @@ spring:
             - Path=/api/user/**
           filters:
             - StripPrefix=2
+            - RemoveRequestHeader=Authorization
 
         - id: company
           uri: ${COMPANY_BASE_URL}
@@ -56,6 +58,7 @@ spring:
             - Path=/api/company/**
           filters:
             - StripPrefix=2
+            - RemoveRequestHeader=Authorization
 
         - id: job
           uri: ${JOB_BASE_URL}
@@ -63,6 +66,7 @@ spring:
             - Path=/api/job/**
           filters:
             - StripPrefix=2
+            - RemoveRequestHeader=Authorization
 
         - id: application
           uri: ${APPLICATION_BASE_URL}
@@ -70,6 +74,7 @@ spring:
             - Path=/api/application/**
           filters:
             - StripPrefix=2
+            - RemoveRequestHeader=Authorization
 
         - id: notification
           uri: ${NOTIFICATION_BASE_URL}
@@ -77,6 +82,7 @@ spring:
             - Path=/api/notification/**
           filters:
             - StripPrefix=2
+            - RemoveRequestHeader=Authorization
 
 management:
   endpoints:
