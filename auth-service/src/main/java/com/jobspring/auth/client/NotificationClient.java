@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
         name = "notification-service",
-        url = "${NOTIFICATION_BASE_URL:}")
+        url = "${NOTIFICATION_BASE_URL:}",
+        configuration = FeignAuthConfig.class)
 public interface NotificationClient {
     @PostMapping("/send-code")
     void sendVerificationCode(@RequestBody SendCodeRequestDTO request);

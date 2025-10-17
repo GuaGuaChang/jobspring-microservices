@@ -56,9 +56,9 @@ jobs:
             --image=${IMAGE_URI} \
             --platform=managed \
             --allow-unauthenticated \
-            --ingress=internal-and-cloud-load-balancing \
-            --service-account="${{ secrets.INTERNAL_SA }}" \
+            --service-account="${{ secrets.RUNTIME_SA }}" \
             --set-env-vars=SPRING_PROFILES_ACTIVE=prod \
             --set-secrets=MAIL_USERNAME=MAIL_USERNAME:latest,MAIL_PASSWORD=MAIL_PASSWORD:latest,MAIL_FROM=MAIL_FROM:latest,JWT_SECRET=JWT_SECRET:latest \
             --set-env-vars=MAIL_HOST=${{ secrets.MAIL_HOST }},MAIL_PORT=${{ secrets.MAIL_PORT }},REDIS_URL="${{ secrets.REDIS_URL }}" \
+            --service-account="${{ secrets.RUNTIME_SA }}" \
             --memory=512Mi --cpu=1 --concurrency=80 --min-instances=0
