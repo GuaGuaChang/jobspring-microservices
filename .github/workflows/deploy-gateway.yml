@@ -57,7 +57,7 @@ jobs:
             --platform=managed \
             --allow-unauthenticated \
             --service-account="${{ secrets.RUNTIME_SA }}" \
-            --set-env-vars=SPRING_PROFILES_ACTIVE=prod \
+            --set-env-vars=SPRING_PROFILES_ACTIVE=prod,SPRING_CONFIG_IMPORT=, \
             --set-env-vars=AUTH_BASE_URL=${{ secrets.AUTH_BASE_URL }} \
             --set-env-vars=USER_BASE_URL=${{ secrets.USER_BASE_URL }} \
             --set-env-vars=COMPANY_BASE_URL=${{ secrets.COMPANY_BASE_URL }} \
@@ -65,4 +65,6 @@ jobs:
             --set-env-vars=APPLICATION_BASE_URL=${{ secrets.APPLICATION_BASE_URL }} \
             --set-env-vars=NOTIFICATION_BASE_URL=${{ secrets.NOTIFICATION_BASE_URL }} \
             --set-secrets=JWT_SECRET=JWT_SECRET:latest \
+            --set-env-vars=SPRING_CLOUD_NACOS_DISCOVERY_ENABLED=false \
+            --set-env-vars=SPRING_CLOUD_NACOS_CONFIG_ENABLED=false \
             --memory=512Mi --cpu=1 --concurrency=80 --min-instances=0
