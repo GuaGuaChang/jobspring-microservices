@@ -16,7 +16,7 @@ spring:
           enabled: false
       httpclient:
         connect-timeout: 2000
-        response-timeout: 2s
+        response-timeout: 15s
       default-filters:
         - name: CircuitBreaker
           args:
@@ -102,7 +102,7 @@ resilience4j:
   timelimiter:
     instances:
       gwDefault:
-        timeout-duration: 10s
+        timeout-duration: 15s
         cancel-running-future: true
 
 jwt:
