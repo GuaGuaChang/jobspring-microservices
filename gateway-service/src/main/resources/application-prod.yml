@@ -38,7 +38,7 @@ spring:
             allowCredentials: true
       routes:
         - id: auth
-          uri: ${AUTH_BASE_URL}
+          uri: https://auth-service-dxgxlyer5a-as.a.run.app
           predicates:
             - Path=/api/auth/**
           filters:
