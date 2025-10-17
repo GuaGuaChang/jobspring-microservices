@@ -27,3 +27,6 @@ app:
     from: ${MAIL_FROM}
 
 management.endpoints.web.exposure.include: "*"
+
+jwt:
+  secret: ${JWT_SECRET}
