@@ -5,6 +5,8 @@ import com.jobspring.job.dto.*;
 import com.jobspring.job.client.AuthClient;
 import com.jobspring.job.dto.JobResponse;
 import com.jobspring.job.dto.JobSummaryResponse;
+import com.jobspring.job.entity.Job;
+import com.jobspring.job.repository.JobRepository;
 import com.jobspring.job.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,10 +14,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -26,6 +30,8 @@ public class JobController {
     private final AuthClient authClient;
 
     private final JobService jobService;
+
+    private final JobRepository jobRepository;
 
     @GetMapping("/test")
     public String test() {
@@ -166,5 +172,12 @@ public class JobController {
 
         JobResponse job = jobService.getJobForEdit(companyId, jobId);
         return ResponseEntity.ok(job);
+    }
+
+    @GetMapping("/{id}/apply/summary")
+    public JobSummaryDTO applySummary(@PathVariable Long id) {
+        Job j = jobRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return new JobSummaryDTO(j.getId(), j.getStatus(), j.getCompanyId(), j.getTitle());
     }
 }
