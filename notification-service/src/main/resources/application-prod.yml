@@ -12,6 +12,9 @@ spring:
         enabled: false
       config:
         enabled: false
+  data:
+    redis:
+      url: ${REDIS_URL}
 
   mail:
     host: ${MAIL_HOST:smtp.qq.com}
