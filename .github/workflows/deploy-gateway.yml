@@ -56,7 +56,7 @@ jobs:
             --image=${IMAGE_URI} \
             --platform=managed \
             --allow-unauthenticated \
-            --service-account="${{ secrets.GATEWAY_SA }}" \
+            --service-account="${{ secrets.RUNTIME_SA }}" \
             --set-env-vars=SPRING_PROFILES_ACTIVE=prod \
             --set-env-vars=AUTH_BASE_URL=${{ secrets.AUTH_BASE_URL }} \
             --set-env-vars=USER_BASE_URL=${{ secrets.USER_BASE_URL }} \
