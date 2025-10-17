@@ -17,7 +17,7 @@ public class SecurityConfig {
     public FilterRegistrationBean<JwtAuthFilter> jwtFilter(JwtService jwtService) {
         FilterRegistrationBean<JwtAuthFilter> bean = new FilterRegistrationBean<>();
         bean.setFilter(new JwtAuthFilter(jwtService));
-        bean.addUrlPatterns("/send-code");
+        bean.addUrlPatterns("/*");
         return bean;
     }
 }
