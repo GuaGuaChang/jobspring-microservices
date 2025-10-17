@@ -13,7 +13,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @Component
-@Profile("cloud")
+@Profile("prod")
 public class IdTokenFilter implements GlobalFilter, Ordered {
 
     @Value("${AUTH_BASE_URL}")
