@@ -91,5 +91,10 @@ public class CompanyController {
         return ResponseEntity.ok(jobs);
     }
 
+    @GetMapping("/hr/{userId}/company-id")
+    public CompanyIdResponse getCompanyIdByHr(@PathVariable("userId") Long userId) {
+        Long companyId = companyService.findCompanyIdByHr(userId);
+        return new CompanyIdResponse(companyId);
+    }
 
 }

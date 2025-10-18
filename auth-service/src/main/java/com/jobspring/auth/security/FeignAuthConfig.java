@@ -18,7 +18,6 @@ public class FeignAuthConfig {
                                          @Value("${spring.application.name}") String appName) {
         return requestTemplate -> {
             String token = jwtService.issueInternalToken(appName, 10);
-            System.out.println("🔑 [auth-service] Generated JWT: " + token.substring(0, 20) + "...");
             requestTemplate.header("Authorization", "Bearer " + token);
         };
     }

@@ -20,4 +20,6 @@ public interface CompanyMemberRepository extends JpaRepository<CompanyMember, Lo
 
     boolean existsByUserIdAndCompanyIdAndRole(Long userId, Long companyId, String role);
 
+    Optional<CompanyMember> findByUserId(Long userId);
+
 }
