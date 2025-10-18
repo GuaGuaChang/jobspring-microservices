@@ -94,13 +94,10 @@ public class CompanyService {
         }
     }
 
-    public Long getCompanyIdForHr(Long userId) {
-        return companyMemberRepository.findCompanyIdByHrUserId(userId)
-                .orElseThrow(() -> new EntityNotFoundException("HR membership not found"));
-    }
 
     public PageResponse<JobResponse> listCompanyJobs(Long companyId, Integer status, int page, int size) {
         return jobClient.getCompanyJobs(companyId, status, page, size);
     }
+
 }
 
