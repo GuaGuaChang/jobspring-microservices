@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -65,9 +66,8 @@ class SkillControllerTest {
         // given
         when(skillRepository.findAll()).thenThrow(new RuntimeException("db down"));
 
-        // when & then
         mockMvc.perform(get("/skills"))
                 .andExpect(status().isInternalServerError())
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("Failed to fetch skills")));
+                .andExpect(status().reason(containsString("Failed to fetch skills")));
     }
 }
