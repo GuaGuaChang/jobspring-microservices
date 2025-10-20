@@ -1,10 +1,12 @@
 package com.jobspring.user.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 public class JobResponse {
     private Long id;
     private Long companyId;
