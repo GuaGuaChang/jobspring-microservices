@@ -54,6 +54,6 @@ jobs:
             --add-cloudsql-instances="${{ secrets.CLOUD_SQL_CONN }}" \
             --set-env-vars=SPRING_PROFILES_ACTIVE=prod,CLOUD_SQL_CONNECTION_NAME="${{ secrets.CLOUD_SQL_CONN }}" \
             --set-env-vars=MONGODB_URI="${{ secrets.MONGODB_URI }}",ZIPKIN_ENDPOINT="${{ secrets.ZIPKIN_ENDPOINT }}",COMPANY_BASE_URL="${{ secrets.COMPANY_BASE_URL }}",USER_BASE_URL="${{ secrets.USER_BASE_URL }}",JOB_BASE_URL="${{ secrets.JOB_BASE_URL }}" \
-            --set-secrets=DB_USER=DB_USER:latest,DB_PASS=DB_PASS:latest \
+            --set-secrets=DB_USER=DB_USER:latest,DB_PASS=DB_PASS:latest, \
             --service-account="${{ secrets.RUNTIME_SA }}" \
             --memory=512Mi --cpu=1 --concurrency=80 --min-instances=0
