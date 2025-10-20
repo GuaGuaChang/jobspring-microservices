@@ -36,3 +36,7 @@ logging:
   level:
     root: INFO
     com.jobspring: INFO
+
+management:
+  tracing.sampling.probability: 1.0
+  zipkin.tracing.endpoint: ${ZIPKIN_ENDPOINT:}
