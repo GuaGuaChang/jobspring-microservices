@@ -226,7 +226,8 @@ public class ApplicationService {
         app.setCompanyId(job.getCompanyId());
         app.setStatus(0);
         app.setAppliedAt(LocalDateTime.now());
-        app.setResumeProfile(form.getResumeProfile());
+        /*app.setResumeProfile(form.getResumeProfile());*/
+        app.setResumeProfile(null);
         app.setResumeFileId(publicId);
 
         applicationRepository.save(app);
