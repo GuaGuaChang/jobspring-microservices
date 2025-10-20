@@ -130,7 +130,7 @@ class UserControllerTest {
     @DisplayName("POST /companies/{id}/jobs HR + CSRF -> 200 并调用下游")
     void createJob_ok_callsDownstream() throws Exception {
         when(jobClient.createJob(eq(7L), any(JobCreateRequest.class)))
-                .thenReturn(new JobResponse()); // 空对象也可以序列化为 {}
+                .thenReturn(mock(JobResponse.class));// 空对象也可以序列化为 {}
 
         mockMvc.perform(post("/companies/7/jobs")
                         .with(csrf())
@@ -148,7 +148,7 @@ class UserControllerTest {
     @DisplayName("POST /companies/{cid}/jobs/{jid} HR + CSRF -> 200 并调用下游")
     void updateJob_ok_callsDownstream() throws Exception {
         when(jobClient.updateJob(eq(9L), eq(88L), any(JobUpdateRequest.class)))
-                .thenReturn(new JobResponse());
+                .thenReturn(mock(JobResponse.class));
 
         mockMvc.perform(post("/companies/9/jobs/88")
                         .with(csrf())
