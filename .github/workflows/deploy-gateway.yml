@@ -63,6 +63,6 @@ jobs:
             --set-env-vars=COMPANY_BASE_URL=${{ secrets.COMPANY_BASE_URL }} \
             --set-env-vars=JOB_BASE_URL=${{ secrets.JOB_BASE_URL }} \
             --set-env-vars=APPLICATION_BASE_URL=${{ secrets.APPLICATION_BASE_URL }} \
-            --set-env-vars=NOTIFICATION_BASE_URL=${{ secrets.NOTIFICATION_BASE_URL }} \
+            --set-env-vars=NOTIFICATION_BASE_URL=${{ secrets.NOTIFICATION_BASE_URL }},ZIPKIN_ENDPOINT="${{ secrets.ZIPKIN_ENDPOINT }}" \
             --set-secrets=JWT_SECRET=JWT_SECRET:latest \
             --memory=512Mi --cpu=1 --concurrency=80 --min-instances=0
