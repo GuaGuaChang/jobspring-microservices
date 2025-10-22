@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public class JobUpdateRequest {
     private String title;
     private String location;
-    private String employmentType;
+    private Integer employmentType;
     private BigDecimal salaryMin;
     private BigDecimal salaryMax;
     private String description;
