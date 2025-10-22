@@ -228,7 +228,7 @@ public class JobService {
             job.setDescription(req.getDescription());
         if (req.getTitle() != null && !req.getTitle().isBlank()) job.setTitle(req.getTitle());
         if (req.getLocation() != null && !req.getLocation().isBlank()) job.setLocation(req.getLocation());
-        if (req.getEmploymentType() != null && !req.getEmploymentType().isBlank()) job.setEmploymentType(Integer.valueOf(req.getEmploymentType()));
+        if  (req.getEmploymentType() != null) job.setEmploymentType(req.getEmploymentType());
 
         jobRepository.save(job);
         return toResponse(job);
