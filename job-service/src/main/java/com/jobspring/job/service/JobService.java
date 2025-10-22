@@ -49,7 +49,6 @@ public class JobService {
     private JobDTO convertToJobSeekerDTO(Job job) {
         JobDTO dto = new JobDTO();
         dto.setId(job.getId());
-        dto.setCompanyId(job.getCompanyId());
         dto.setTitle(job.getTitle());
         dto.setLocation(job.getLocation());
         dto.setSalaryMin(job.getSalaryMin());
@@ -69,9 +68,9 @@ public class JobService {
                 if (company != null) {
                     dto.setCompany(company.getName());
                     dto.setCompanyId(company.getId());
+                    System.out.println("111111");
                 }
             } catch (Exception e) {
-                // 可加日志防止外部调用失败影响主流程
                 System.err.println("Failed to fetch company info for jobId " + job.getId());
             }
         }
