@@ -68,7 +68,6 @@ public class JobService {
                 if (company != null) {
                     dto.setCompany(company.getName());
                     dto.setCompanyId(company.getId());
-                    System.out.println("111111");
                 }
             } catch (Exception e) {
                 System.err.println("Failed to fetch company info for jobId " + job.getId());
