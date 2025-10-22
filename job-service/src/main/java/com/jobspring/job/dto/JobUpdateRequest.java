@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class JobUpdateRequest {
+    private String title;
+    private String location;
+    private String employmentType;
     private BigDecimal salaryMin;
     private BigDecimal salaryMax;
     private String description;
