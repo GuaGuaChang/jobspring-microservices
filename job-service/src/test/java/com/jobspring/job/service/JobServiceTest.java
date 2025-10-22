@@ -79,7 +79,7 @@ class JobServiceTest {
         assertThat(dto.getCompanyId()).isEqualTo(7L);
         assertThat(dto.getCompany()).isEqualTo("ACME");
         assertThat(dto.getLocation()).isEqualTo("Singapore");
-        assertThat(dto.getEmploymentType()).isEqualTo("Full-time");
+        assertThat(dto.getEmploymentType()).isEqualTo("Full Time");
         assertThat(dto.getSalaryMin()).isEqualByComparingTo("8000");
         assertThat(dto.getSalaryMax()).isEqualByComparingTo("12000");
         assertThat(dto.getDescription()).isEqualTo("Backend dev");
