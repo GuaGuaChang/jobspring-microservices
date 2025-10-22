@@ -214,6 +214,8 @@ class JobServiceTest {
         var req = new com.jobspring.job.dto.JobUpdateRequest();
         req.setSalaryMin(new BigDecimal("9000"));
         req.setDescription("updated");
+        req.setTitle("updated");
+        req.setEmploymentType("1");
 
         var res = jobService.updateJob(7L, 100L, req);
 

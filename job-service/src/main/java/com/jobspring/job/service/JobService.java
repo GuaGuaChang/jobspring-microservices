@@ -226,6 +226,9 @@ public class JobService {
         if (req.getSalaryMax() != null) job.setSalaryMax(req.getSalaryMax());
         if (req.getDescription() != null && !req.getDescription().isBlank())
             job.setDescription(req.getDescription());
+        if (req.getTitle() != null && !req.getTitle().isBlank()) job.setTitle(req.getTitle());
+        if (req.getLocation() != null && !req.getLocation().isBlank()) job.setLocation(req.getLocation());
+        if (req.getEmploymentType() != null && !req.getEmploymentType().isBlank()) job.setEmploymentType(Integer.valueOf(req.getEmploymentType()));
 
         jobRepository.save(job);
         return toResponse(job);
