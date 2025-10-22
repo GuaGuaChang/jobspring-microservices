@@ -80,12 +80,12 @@ public class JobService {
 
     // 获取工作类型名称
     private String getEmploymentTypeName(Integer type) {
-        if (type == null) return "未知";
+        if (type == null) return "Full Time";
         return switch (type) {
-            case 1 -> "Full-time";
-            case 2 -> "Internship";
-            case 3 -> "Contract";
-            default -> "未知";
+            case 1 -> "Full Time";
+            case 2 -> "Part Time";
+            case 3 -> "Remote";
+            default -> "Full Time";
         };
     }
 
