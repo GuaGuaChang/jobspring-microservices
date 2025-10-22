@@ -49,6 +49,7 @@ public class JobService {
     private JobDTO convertToJobSeekerDTO(Job job) {
         JobDTO dto = new JobDTO();
         dto.setId(job.getId());
+        dto.setCompanyId(job.getCompanyId());
         dto.setTitle(job.getTitle());
         dto.setLocation(job.getLocation());
         dto.setSalaryMin(job.getSalaryMin());
