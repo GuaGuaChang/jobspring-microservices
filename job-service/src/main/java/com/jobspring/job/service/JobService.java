@@ -54,7 +54,6 @@ public class JobService {
         dto.setSalaryMin(job.getSalaryMin());
         dto.setSalaryMax(job.getSalaryMax());
         dto.setPostedAt(job.getPostedAt());
-
         dto.setEmploymentType(getEmploymentTypeName(job.getEmploymentType()));
 
         dto.setDescription(job.getDescription());
